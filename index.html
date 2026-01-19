@@ -63,16 +63,37 @@
             z-index: -1;
         }
 
+        /* --- Custom Scrollbar (Overlay look) --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: transparent; /* Makes track transparent */
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(15, 23, 42, 0.3);
+            border-radius: 4px;
+            border: 2px solid transparent; /* padding around thumb */
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(15, 23, 42, 0.6);
+        }
+
         .container {
-            max-width: 1000px;
+            max-width: 900px; /* Reduced to make videos smaller */
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 30px 20px; /* Reduced padding */
         }
 
         /* --- Header Section --- */
         header {
             text-align: center;
-            margin-bottom: 70px;
+            margin-bottom: 40px; /* Reduced from 70px */
             position: relative;
         }
 
@@ -164,9 +185,9 @@
         /* --- Abstract Section (Technical Card) --- */
         .abstract-section {
             background-color: white;
-            padding: 40px;
+            padding: 30px; /* Reduced from 40px */
             border-radius: var(--radius-lg);
-            margin-bottom: 80px;
+            margin-bottom: 50px; /* Reduced from 80px */
             text-align: justify;
             max-width: 900px;
             margin-left: auto;
@@ -219,17 +240,17 @@
 
         /* --- Results Section Styling --- */
         .results-section {
-            margin-bottom: 100px;
+            margin-bottom: 50px; /* Reduced from 100px */
         }
 
         .section-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem; /* Reduced from 1.8rem */
             text-align: left;
             font-weight: 700;
             color: var(--primary-text);
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px; /* Reduced from 25px */
+            padding-bottom: 0; /* Removed padding for border */
+            border-bottom: none; /* Removed line to fit grid bg */
             letter-spacing: -0.02em;
             display: flex;
             align-items: center;
@@ -256,7 +277,7 @@
             background: white;
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 15px; /* Reduced from 30px */
+            padding: 10px; /* Reduced from 15px */
             box-shadow: var(--shadow-lifted);
         }
 
@@ -264,7 +285,7 @@
         .combined-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px; /* Reduced specificially to keep items close */
+            gap: 5px; /* Reduced from 10px */
             margin-bottom: 0;
         }
 
@@ -280,19 +301,20 @@
         .video-stack {
             display: flex;
             flex-direction: row;
-            gap: 15px;
-            margin-bottom: 5px; /* Tighter */
+            gap: 10px; /* Reduced from 15px */
+            margin-bottom: 2px; /* Tighter */
         }
 
         /* The Viewport Container */
         .video-container {
             position: relative;
-            width: 50%;
+            width: calc(50% - 8px); /* Ensure it fits with gap */
             border-radius: var(--radius-md);
             overflow: hidden;
             background: #000;
             border: 1px solid rgba(0,0,0,0.1);
             aspect-ratio: 16 / 9; /* Fix aspect ratio */
+            min-height: 150px; /* Fallback height */
             
             /* Monitor Effect */
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -318,10 +340,73 @@
             font-size: 0.7rem;
             font-weight: 500;
             z-index: 2;
-            text-transform: uppercase;
             letter-spacing: 0.05em;
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Custom Video Controls */
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            padding: 10px 15px 15px; /* Added bottom padding */
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 5;
+        }
+
+        .video-container:hover .custom-controls {
+            opacity: 1;
+        }
+
+        .play-pause-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+
+        .play-pause-btn:hover {
+            opacity: 1;
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 4px; /* Thin line */
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: height 0.1s;
+        }
+        
+        /* Make progress bar easier to hit on hover */
+        .progress-bar-bg:hover {
+            height: 6px; 
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--accent-blue);
+            border-radius: 2px;
         }
 
         /* TokenTrim Highlight Label */
@@ -370,9 +455,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 24px;
-            margin: 5px 0; /* Drastically reduced */
-            padding: 5px;
+            gap: 16px; /* Reduced from 24px */
+            margin: 0; /* Removed margin */
+            padding: 4px;
             border-top: 1px dashed var(--grid-line);
             border-bottom: 1px dashed var(--grid-line);
         }
@@ -456,9 +541,84 @@
             .combined-grid { gap: 30px; }
             .prompt-box { font-size: 0.8rem; text-align: left; justify-content: flex-start; }
         }
+        /* --- Hero Grid --- */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-cell {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .hero-cell video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s ease;
+            opacity: 1;
+            filter: brightness(1.0);
+        }
+
+        .hero-cell:hover video {
+            opacity: 0.4;
+            filter: brightness(0.7) blur(2px);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box; /* Fix for centering offset */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .hero-cell:hover .hero-overlay {
+            opacity: 1;
+        }
+
+        .hero-prompt {
+            font-family: 'Plus Jakarta Sans', sans-serif; /* Match abstract font */
+            color: white;
+            font-size: 1.25rem; /* Larger, more impactful */
+            font-weight: 700;
+            text-align: center;
+            background: transparent; /* Remove box */
+            padding: 0;
+            border-radius: 0;
+            border: none;
+            backdrop-filter: none;
+            max-width: 80%;
+            box-shadow: none;
+            line-height: 1.3;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.8); /* Float effect */
+            letter-spacing: -0.02em;
+        }
     </style>
 </head>
 <body>
+
+<div id="hero-grid" class="hero-grid"></div>
 
 <div class="container">
 
@@ -473,10 +633,10 @@
             <a href="#" class="btn">BibTeX</a>
         </div>
         
-        <nav class="internal-nav">
+        <!-- <nav class="internal-nav">
             <a href="#carousel-30s" class="nav-link">30s Video Generations</a>
             <a href="#carousel-90s" class="nav-link">90s Video Generations</a>
-        </nav>
+        </nav> -->
     </header>
 
     <section class="abstract-section">
@@ -487,19 +647,31 @@
     </section>
 
     <section class="results-section" id="sec-30s">
-        <h2 class="section-title">30-Second Video Generation</h2>
+        <h2 class="section-title">30s Video Generation Comparison</h2>
 
         <div class="carousel-wrapper" id="carousel-30s">
             <div class="combined-grid">
                 <div class="baseline-group">
                     <div class="video-stack">
                         <div class="video-container">
-                            <div class="video-label">Rolling Forcing</div>
+                            <div class="video-label">RollingForcing</div>
                             <video id="vid-30s-rolling-base" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-30s-rolling-base">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-30s-rolling-base">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="video-container">
                             <div class="video-label label-ours">+ TokenTrim</div>
                             <video id="vid-30s-rolling-ours" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-30s-rolling-ours">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-30s-rolling-ours">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="prompt-box" id="prompt-30s-rolling">Loading prompt...</div>
@@ -515,12 +687,24 @@
                 <div class="baseline-group">
                     <div class="video-stack">
                         <div class="video-container">
-                            <div class="video-label">Self Forcing</div>
+                            <div class="video-label">SelfForcing</div>
                             <video id="vid-30s-self-base" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-30s-self-base">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-30s-self-base">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="video-container">
                             <div class="video-label label-ours">+ TokenTrim</div>
                             <video id="vid-30s-self-ours" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-30s-self-ours">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-30s-self-ours">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="prompt-box" id="prompt-30s-self">Loading prompt...</div>
@@ -530,19 +714,31 @@
     </section>
 
     <section class="results-section" id="sec-90s">
-        <h2 class="section-title">90-Second Video Generation <span class="badge-long">Long Horizon</span></h2>
+        <h2 class="section-title">90s Video Generation Comparison<span class="badge-long">Long Horizon</span></h2>
 
         <div class="carousel-wrapper" id="carousel-90s">
             <div class="combined-grid">
                 <div class="baseline-group">
                     <div class="video-stack">
                         <div class="video-container">
-                            <div class="video-label">Rolling Forcing</div>
+                            <div class="video-label">RollingForcing</div>
                             <video id="vid-90s-rolling-base" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-90s-rolling-base">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-90s-rolling-base">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="video-container">
                             <div class="video-label label-ours">+ TokenTrim</div>
                             <video id="vid-90s-rolling-ours" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-90s-rolling-ours">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-90s-rolling-ours">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="prompt-box" id="prompt-90s-rolling">Loading prompt...</div>
@@ -558,15 +754,66 @@
                 <div class="baseline-group">
                     <div class="video-stack">
                         <div class="video-container">
-                            <div class="video-label">Self Forcing</div>
+                            <div class="video-label">SelfForcing</div>
                             <video id="vid-90s-self-base" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-90s-self-base">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-90s-self-base">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="video-container">
                             <div class="video-label label-ours">+ TokenTrim</div>
                             <video id="vid-90s-self-ours" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-90s-self-ours">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-90s-self-ours">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="prompt-box" id="prompt-90s-self">Loading prompt...</div>
+                </div>
+            </div>
+        </div>
+    <section class="results-section" id="sec-flowmo">
+        <h2 class="section-title">FlowMo vs TokenTrim Comparison</h2>
+
+        <div class="carousel-wrapper" id="carousel-flowmo">
+            <div class="combined-grid">
+                <div class="baseline-group">
+                    <div class="video-stack">
+                        <div class="video-container">
+                            <div class="video-label">FlowMo</div>
+                            <video id="vid-flowmo-main-base" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-flowmo-main-base">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-flowmo-main-base">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-container">
+                            <div class="video-label label-ours">+ TokenTrim</div>
+                            <video id="vid-flowmo-main-ours" playsinline loop muted autoplay></video>
+                            <div class="custom-controls">
+                                <button class="play-pause-btn" data-target="vid-flowmo-main-ours">❚❚</button>
+                                <div class="progress-bar-bg" data-target="vid-flowmo-main-ours">
+                                    <div class="progress-bar-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="prompt-box" id="prompt-flowmo-main">Loading prompt...</div>
+                </div>
+
+                <!-- Controls Bar -->
+                <div class="controls-bar">
+                    <button class="nav-btn prev" onclick="changeSlide('flowmo', -1)">&#10094;</button>
+                    <div class="dots" id="dots-flowmo"></div>
+                    <button class="nav-btn next" onclick="changeSlide('flowmo', 1)">&#10095;</button>
                 </div>
             </div>
         </div>
@@ -598,7 +845,7 @@
                 "30s Rolling - Prompt 10"
             ],
             'self': [
-                "30s Self - Prompt 1",
+                "A young girl skips down a quiet suburban street lined with trees.",
                 "30s Self - Prompt 2",
                 "30s Self - Prompt 3",
                 "30s Self - Prompt 4",
@@ -612,14 +859,14 @@
         },
         '90s': {
             'rolling': [
+                "A llama dances on a stage with disco lights.",
                 "A young girl coloring at her desk.",
                 "A humanoid silhouette made of stars walks across darkness. Glow as he walks.",
                 "A hand holding a bright yellow fidget spinner.",
                 "A woman dancing hip hop, street dancing in the studio. Slow motion.",
                 "A boy blowing out candles on a birthday cake.",
                 "A helicopter flying over a forest. The helicopter is black and has two large rotor blades on top.",
-                "1.5m Rolling - Prompt 7",
-                "1.5m Rolling - Prompt 8",
+                "Pikachu hopping across rocks near a mountain stream, maintaining balance while water splashes nearby.",
                 "1.5m Rolling - Prompt 9",
                 "1.5m Rolling - Prompt 10"
             ],
@@ -635,8 +882,19 @@
                 "1.5m Self - Prompt 9",
                 "1.5m Self - Prompt 10"
             ]
+        },
+        'flowmo': {
+            'main': [
+                "A dragon lowers its head and spreads its wings.",
+                "Smoke drifts sideways with trailing motion.",
+                "A paper cutout character walks sideways flatly.",
+                "FlowMo - Prompt 4",
+                "FlowMo - Prompt 5"
+            ]
         }
     };
+
+
 
     // Placeholder video paths.
     // Edit these paths to point to your actual video files.
@@ -670,7 +928,7 @@
             },
             'self': {
                 'baseline': [
-                    "video_30s_self_01_baseline.mp4",
+                    "30s/self/girl_walking_self.mp4",
                     "video_30s_self_02_baseline.mp4",
                     "video_30s_self_03_baseline.mp4",
                     "video_30s_self_04_baseline.mp4",
@@ -682,7 +940,7 @@
                     "video_30s_self_10_baseline.mp4"
                 ],
                 'ours': [
-                    "video_30s_self_01_tokentrim.mp4",
+                    "30s/ours/girl_walking_ours.mp4",
                     "video_30s_self_02_tokentrim.mp4",
                     "video_30s_self_03_tokentrim.mp4",
                     "video_30s_self_04_tokentrim.mp4",
@@ -698,26 +956,26 @@
         '90s': {
             'rolling': {
                 'baseline': [
+                    "90s/rolling/llama_rolling.mp4",
                     "90s/rolling/pencil_rolling.mp4",
                     "90s/rolling/glower_rolling.mp4",
                     "90s/rolling/spinner_rolling.mp4",
                     "90s/rolling/dancer_rolling.mp4",
                     "90s/rolling/candles_rolling.mp4",
                     "90s/rolling/helicopter_rolling.mp4",
-                    "video_90s_rolling_07_baseline.mp4",
-                    "video_90s_rolling_08_baseline.mp4",
+                    "90s/rolling/pikachu_rolling.mp4",
                     "video_90s_rolling_09_baseline.mp4",
                     "video_90s_rolling_10_baseline.mp4"
                 ],
                 'ours': [
+                    "90s/ours/llama_ours.mp4",
                     "90s/ours/pencil_ours.mp4",
                     "90s/ours/glower_ours.mp4",
                     "90s/ours/spinner_ours.mp4",
                     "90s/ours/dancer_ours.mp4",
                     "90s/ours/candles_ours.mp4",
                     "90s/ours/helicopter_ours.mp4",
-                    "video_90s_rolling_07_tokentrim.mp4",
-                    "video_90s_rolling_08_tokentrim.mp4",
+                    "90s/ours/pikachu_ours.mp4",
                     "video_90s_rolling_09_tokentrim.mp4",
                     "video_90s_rolling_10_tokentrim.mp4"
                 ]
@@ -748,15 +1006,39 @@
                     "video_90s_self_10_tokentrim.mp4"
                 ]
             }
+        },
+        'flowmo': {
+            'main': {
+                'baseline': [
+                    "baselines/flowmo/dragon_flowmo.mp4",
+                    "baselines/flowmo/plato_flowmo.mp4",
+                    "baselines/flowmo/paperman_flowmo.mp4",
+                    "flowmo/baseline/flowmo_04.mp4",
+                    "flowmo/baseline/flowmo_05.mp4"
+                ],
+                'ours': [
+                    "baselines/ours/dragon_ours.mp4",
+                    "baselines/ours/plato_ours.mp4",
+                    "baselines/ours/paperman_ours.mp4",
+                    "flowmo/ours/trim_04.mp4",
+                    "flowmo/ours/trim_05.mp4"
+                ]
+            }
         }
     };
 
-    const totalItems = 10;
+    // Configuration for each section
+    const sectionConfig = {
+        '30s': { count: 10, types: ['rolling', 'self'] },
+        '90s': { count: 10, types: ['rolling', 'self'] },
+        'flowmo': { count: 5, types: ['main'] }
+    };
 
     // State management for each unified carousel
     const carouselStates = {
         '30s': { index: 0 },
-        '90s': { index: 0 }
+        '90s': { index: 0 },
+        'flowmo': { index: 0 }
     };
 
     // --- Logic ---
@@ -764,8 +1046,12 @@
     // Initialize Dots
     function initDots(sectionId) {
         const dotsContainer = document.getElementById(`dots-${sectionId}`);
+        if (!dotsContainer) return;
+        
         dotsContainer.innerHTML = ''; // Clear
-        for (let i = 0; i < totalItems; i++) {
+        const count = sectionConfig[sectionId].count;
+        
+        for (let i = 0; i < count; i++) {
             const dot = document.createElement('div');
             dot.className = 'dot';
             dot.onclick = () => jumpToSlide(sectionId, i);
@@ -774,38 +1060,30 @@
     }
 
     function updateCarouselUI(sectionId) {
-        // sectionId is '30s' or '90s'
         const state = carouselStates[sectionId];
+        const config = sectionConfig[sectionId];
         const currentIndex = state.index;
         
-        // We have 4 videos per section:
-        // Rolling Base, Rolling Ours
-        // Self Base, Self Ours
-        
-        // Update Rolling Videos
-        updateVideoPair(sectionId, 'rolling', currentIndex);
-        // Update Self Videos
-        updateVideoPair(sectionId, 'self', currentIndex);
-
-        // Update Prompts
-        // Using specific prompts for each subtype
-        const rollingPrompt = promptData[sectionId]['rolling'][currentIndex];
-        const selfPrompt = promptData[sectionId]['self'][currentIndex];
-        
-        const rollingPromptEl = document.getElementById(`prompt-${sectionId}-rolling`);
-        if(rollingPromptEl) rollingPromptEl.textContent = `"${rollingPrompt}"`;
-        
-        const selfPromptEl = document.getElementById(`prompt-${sectionId}-self`);
-        if(selfPromptEl) selfPromptEl.textContent = `"${selfPrompt}"`;
+        // Update Videos for each type in this section
+        config.types.forEach(type => {
+            updateVideoPair(sectionId, type, currentIndex);
+            
+            // Update Prompt
+            const prompt = promptData[sectionId][type][currentIndex];
+            const promptEl = document.getElementById(`prompt-${sectionId}-${type}`);
+            if(promptEl) promptEl.textContent = `> ${prompt}`;
+        });
 
         // Update Dots
         const dotsContainer = document.getElementById(`dots-${sectionId}`);
-        const dots = dotsContainer.getElementsByClassName('dot');
-        for (let i = 0; i < dots.length; i++) {
-            if (i === currentIndex) {
-                dots[i].classList.add('active');
-            } else {
-                dots[i].classList.remove('active');
+        if(dotsContainer) {
+            const dots = dotsContainer.getElementsByClassName('dot');
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentIndex) {
+                    dots[i].classList.add('active');
+                } else {
+                    dots[i].classList.remove('active');
+                }
             }
         }
     }
@@ -821,18 +1099,22 @@
         const oursFilename = videoData[sectionId][type]['ours'][currentIndex];
 
         // Assign actual paths
-        baseVid.src = baseFilename;
-        oursVid.src = oursFilename;
-        
-        // Ensure they play if loaded
-        baseVid.play().catch(e => {}); 
-        oursVid.play().catch(e => {});
+        // Avoid reloading if src is same (optional optimization)
+        if (baseVid.getAttribute('src') !== baseFilename) {
+            baseVid.src = baseFilename;
+            baseVid.play().catch(e => {}); 
+        }
+        if (oursVid.getAttribute('src') !== oursFilename) {
+            oursVid.src = oursFilename;
+            oursVid.play().catch(e => {});
+        }
     }
 
     function changeSlide(sectionId, direction) {
         const state = carouselStates[sectionId];
+        const count = sectionConfig[sectionId].count;
         // Calculate new index with wrapping
-        state.index = (state.index + direction + totalItems) % totalItems;
+        state.index = (state.index + direction + count) % count;
         updateCarouselUI(sectionId);
     }
 
@@ -849,27 +1131,102 @@
             updateCarouselUI(id);
         });
 
-        // Enforce video duration limits
-        const limit30 = 30;
-        const limit90 = 90;
+        // Initialize Hero Grid
+        const heroGrid = document.getElementById('hero-grid');
+        if (heroGrid) {
+            // Manually map indices to ensure we get the best 8 videos
+            // 0:llama, 1:pencil, 2:glower, 3:spinner, 4:dancer, 5:candles, 6:helicopter, 7:pikachu
+            const heroIndices = [0, 1, 2, 3, 4, 5, 6, 7];
+            const heroCount = 12; // 4x3 grid
+            
+            for (let i = 0; i < heroCount; i++) {
+                const dataIndex = heroIndices[i % heroIndices.length];
+                
+                // Get path and prompt from 90s/ours
+                const src = videoData['90s']['rolling']['ours'][dataIndex];
+                const promptText = promptData['90s']['rolling'][dataIndex];
 
-        const videos30 = document.querySelectorAll('#carousel-30s video');
-        videos30.forEach(vid => {
-            vid.addEventListener('timeupdate', function() {
-                if (this.currentTime >= limit30) {
-                    this.currentTime = 0;
-                    this.play(); // Ensure it keeps playing
+                if (src && promptText) {
+                    const cell = document.createElement('div');
+                    cell.className = 'hero-cell';
+                    
+                    const video = document.createElement('video');
+                    video.src = src;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    
+                    const overlay = document.createElement('div');
+                    overlay.className = 'hero-overlay';
+                    
+                    const prompt = document.createElement('div');
+                    prompt.className = 'hero-prompt';
+                    prompt.textContent = promptText; // Removed "> " prefix
+                    
+                    overlay.appendChild(prompt);
+                    cell.appendChild(video);
+                    cell.appendChild(overlay);
+                    heroGrid.appendChild(cell);
+                }
+            }
+        }
+
+        // Initialize custom video controls
+        const allVideoContainers = document.querySelectorAll('.video-container');
+        
+        allVideoContainers.forEach(container => {
+            const video = container.querySelector('video');
+            const playBtn = container.querySelector('.play-pause-btn');
+            const progressBarBg = container.querySelector('.progress-bar-bg');
+            const progressBarFill = container.querySelector('.progress-bar-fill');
+            
+            if (!video || !playBtn || !progressBarBg || !progressBarFill) return;
+
+            // Determine limit based on section ID
+            const is90s = container.closest('#sec-90s') !== null;
+            const limit = is90s ? 90 : 30;
+
+            // Play/Pause Toggle
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent other clicks
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
                 }
             });
-        });
- 
-        const videos90 = document.querySelectorAll('#carousel-90s video');
-        videos90.forEach(vid => {
-            vid.addEventListener('timeupdate', function() {
-                if (this.currentTime >= limit90) {
-                    this.currentTime = 0;
-                    this.play(); // Ensure it keeps playing
+
+            // Update Play/Pause Icon
+            video.addEventListener('play', () => {
+                playBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+            });
+            video.addEventListener('pause', () => {
+                playBtn.innerHTML = '&#9654;'; // Play icon
+            });
+
+            // Update Progress Bar & Loop
+            video.addEventListener('timeupdate', () => {
+                // Enforce limit loop
+                if (video.currentTime >= limit) {
+                    video.currentTime = 0;
+                    video.play();
                 }
+
+                // Update bar width
+                const percentage = (video.currentTime / limit) * 100;
+                progressBarFill.style.width = `${Math.min(percentage, 100)}%`;
+            });
+
+            // Scrubbing
+            progressBarBg.addEventListener('click', (e) => {
+                const rect = progressBarBg.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const percentage = offsetX / rect.width;
+                
+                // Jump to time
+                const newTime = percentage * limit;
+                video.currentTime = newTime;
             });
         });
     });
