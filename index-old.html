@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Trim: Inference-Time Token Pruning</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #333;
+            --accent-color: #209cee;
+            --bg-color: #ffffff;
+            --text-color: #4a4a4a;
+            --light-gray: #f5f5f5;
+            --shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .authors {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background 0.3s ease, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn:hover {
+            background-color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* Abstract Section */
+        .abstract-section {
+            background-color: var(--light-gray);
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 50px;
+            text-align: justify;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .abstract-section h2 {
+            text-align: center;
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Results Section Styling */
+        .results-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+
+        /* Carousel Component */
+        .carousel-wrapper {
+            position: relative;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: var(--radius);
+            padding: 20px 40px; /* Added side padding for arrows */
+            box-shadow: var(--shadow);
+        }
+
+        /* Grid Layout for Combined Baselines */
+        .combined-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .baseline-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .baseline-header {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .video-stack {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 50%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+        }
+
+        .video-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        /* TokenTrim Highlight Label */
+        .label-ours {
+            background: rgba(255, 140, 0, 0.9); /* Orange */
+        }
+
+        .prompt-box {
+            /* Text-only style */
+            font-family: 'Times New Roman', serif;
+            font-size: 1.3rem; /* A little bigger */
+            font-style: italic;
+            text-align: center;
+            color: var(--primary-color);
+            padding: 5px 0;
+            margin-bottom: 5px; /* Tighter spacing */
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5px; /* Tighter */
+            padding-top: 5px;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            color: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .nav-btn.prev { left: 10px; }
+        .nav-btn.next { right: 10px; }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Helper for 1.5m tag */
+        .badge-long {
+            background-color: #ffdd57;
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 80px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .combined-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .container { padding: 20px; }
+            .carousel-wrapper { padding: 20px 10px; }
+            .nav-btn { width: 30px; height: 30px; font-size: 1rem; }
+            .nav-btn.prev { left: 5px; }
+            .nav-btn.next { right: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Token Trim: Inference-Time Token Pruning for Autoregressive Long Video Generation</h1>
+        <div class="authors">
+            Anonymous Author(s) (Submission ID: 443)
+        </div>
+        <div class="links">
+            <a href="#" class="btn">Paper (PDF)</a>
+            <a href="#" class="btn">Code (GitHub)</a>
+            <a href="#" class="btn">BibTeX</a>
+        </div>
+    </header>
+
+    <section class="abstract-section">
+        <h2>Abstract</h2>
+        <p>
+            Auto-regressive video generation enables long video synthesis by iteratively conditioning each new batch of frames on previously generated content. However, recent work has shown that such pipelines suffer from severe temporal drift, where errors accumulate and amplify over long horizons. We hypothesize that this drift does not primarily stem from insufficient model capacity, but rather from inference-time error propagation. Specifically, we contend that drift arises from the uncontrolled reuse of corrupted latent conditioning tokens during auto-regressive inference. To correct this accumulation of errors, we propose a simple, inference-time method that mitigates temporal drift by identifying and removing unstable latent tokens before they are reused for conditioning. For this purpose, we define unstable tokens as latent tokens whose representations deviate significantly from those of the previously generated batch, indicating potential corruption or semantic drift. By explicitly removing corrupted latent tokens from the auto-regressive context, rather than modifying entire spatial regions or model parameters, our method prevents unreliable latent information from influencing future generation steps. As a result, it significantly improves long-horizon temporal consistency without modifying the model architecture, training procedure, or leaving latent space.
+        </p>
+    </section>
+
+    <section class="results-section">
+        <h2 class="section-title">30-Second Video Generation</h2>
+
+        <div class="carousel-wrapper" id="carousel-30s">
+            <button class="nav-btn prev" onclick="changeSlide('30s', -1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide('30s', 1)">&#10095;</button>
+
+            <div class="combined-grid">
+                <!-- Group 1: Rolling Forcing -->
+                <div class="baseline-group">
+                    <div class="video-stack">
+                        <div class="video-container">
+                            <div class="video-label">Rolling Forcing</div>
+                            <video id="vid-30s-rolling-base" playsinline loop muted autoplay></video>
+                        </div>
+                        <div class="video-container">
+                            <div class="video-label label-ours">+ TokenTrim</div>
+                            <video id="vid-30s-rolling-ours" playsinline loop muted autoplay></video>
+                        </div>
+                    </div>
+                    <div class="prompt-box" id="prompt-30s-rolling">Loading prompt...</div>
+                </div>
+
+                <!-- Group 2: Self Forcing -->
+                <div class="baseline-group">
+                    <div class="video-stack">
+                        <div class="video-container">
+                            <div class="video-label">Self Forcing</div>
+                            <video id="vid-30s-self-base" playsinline loop muted autoplay></video>
+                        </div>
+                        <div class="video-container">
+                            <div class="video-label label-ours">+ TokenTrim</div>
+                            <video id="vid-30s-self-ours" playsinline loop muted autoplay></video>
+                        </div>
+                    </div>
+                    <div class="prompt-box" id="prompt-30s-self">Loading prompt...</div>
+                </div>
+            </div>
+
+            <div class="pagination-container">
+                <div class="dots" id="dots-30s">
+                    <!-- Dots generated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="results-section">
+        <h2 class="section-title">90-Second Video Generation <span class="badge-long">Long Horizon</span></h2>
+
+        <div class="carousel-wrapper" id="carousel-90s">
+            <button class="nav-btn prev" onclick="changeSlide('90s', -1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide('90s', 1)">&#10095;</button>
+
+            <div class="combined-grid">
+                <!-- Group 1: Rolling Forcing -->
+                <div class="baseline-group">
+                    <div class="video-stack">
+                        <div class="video-container">
+                            <div class="video-label">Rolling Forcing</div>
+                            <video id="vid-90s-rolling-base" playsinline loop muted autoplay></video>
+                        </div>
+                        <div class="video-container">
+                            <div class="video-label label-ours">+ TokenTrim</div>
+                            <video id="vid-90s-rolling-ours" playsinline loop muted autoplay></video>
+                        </div>
+                    </div>
+                    <div class="prompt-box" id="prompt-90s-rolling">Loading prompt...</div>
+                </div>
+
+                <!-- Group 2: Self Forcing -->
+                <div class="baseline-group">
+                    <div class="video-stack">
+                        <div class="video-container">
+                            <div class="video-label">Self Forcing</div>
+                            <video id="vid-90s-self-base" playsinline loop muted autoplay></video>
+                        </div>
+                        <div class="video-container">
+                            <div class="video-label label-ours">+ TokenTrim</div>
+                            <video id="vid-90s-self-ours" playsinline loop muted autoplay></video>
+                        </div>
+                    </div>
+                    <div class="prompt-box" id="prompt-90s-self">Loading prompt...</div>
+                </div>
+            </div>
+
+            <div class="pagination-container">
+                <div class="dots" id="dots-90s">
+                    <!-- Dots generated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Token Trim Project Page. All videos are placeholders for demonstration.</p>
+    </footer>
+
+</div>
+
+<script>
+    // --- Data Configuration ---
+    
+    // Placeholder prompts for each section and baseline type.
+    // Easy to customize: just edit the strings in the arrays below.
+    const promptData = {
+        '30s': {
+            'rolling': [
+                "A humanoid made of smoke solidifies briefly with each step, then disperses and reforms.",
+                "A locked-off shot of frost melting off a car windshield. Ice crystals shrink, slide, and merge.",
+                "A liquid silhouette flows forward in humanoid form.",
+                "A glowing wireframe animal fills itself with flesh as it runs.",
+                "A corridor fills with rising water.",
+                "30s Rolling - Prompt 6",
+                "30s Rolling - Prompt 7",
+                "30s Rolling - Prompt 8",
+                "30s Rolling - Prompt 9",
+                "30s Rolling - Prompt 10"
+            ],
+            'self': [
+                "30s Self - Prompt 1",
+                "30s Self - Prompt 2",
+                "30s Self - Prompt 3",
+                "30s Self - Prompt 4",
+                "30s Self - Prompt 5",
+                "30s Self - Prompt 6",
+                "30s Self - Prompt 7",
+                "30s Self - Prompt 8",
+                "30s Self - Prompt 9",
+                "30s Self - Prompt 10"
+            ]
+        },
+        '90s': {
+            'rolling': [
+                "A humanoid silhouette made of stars walks across darkness. Glow as he walks.",
+                "1.5m Rolling - Prompt 2",
+                "1.5m Rolling - Prompt 3",
+                "1.5m Rolling - Prompt 4",
+                "1.5m Rolling - Prompt 5",
+                "1.5m Rolling - Prompt 6",
+                "1.5m Rolling - Prompt 7",
+                "1.5m Rolling - Prompt 8",
+                "1.5m Rolling - Prompt 9",
+                "1.5m Rolling - Prompt 10"
+            ],
+            'self': [
+                "1.5m Self - Prompt 1",
+                "1.5m Self - Prompt 2",
+                "1.5m Self - Prompt 3",
+                "1.5m Self - Prompt 4",
+                "1.5m Self - Prompt 5",
+                "1.5m Self - Prompt 6",
+                "1.5m Self - Prompt 7",
+                "1.5m Self - Prompt 8",
+                "1.5m Self - Prompt 9",
+                "1.5m Self - Prompt 10"
+            ]
+        }
+    };
+
+    // Placeholder video paths.
+    // Edit these paths to point to your actual video files.
+    const videoData = {
+        '30s': {
+            'rolling': {
+                'baseline': [
+                    "30s/rolling/smoke_rolling.mp4",
+                    "30s/rolling/windshield_rolling.mp4",
+                    "30s/rolling/aquaman_rolling.mp4",
+                    "30s/rolling/render_rolling.mp4",
+                    "30s/rolling/corridor_rolling.mp4",
+                    "video_30s_rolling_06_baseline.mp4",
+                    "video_30s_rolling_07_baseline.mp4",
+                    "video_30s_rolling_08_baseline.mp4",
+                    "video_30s_rolling_09_baseline.mp4",
+                    "video_30s_rolling_10_baseline.mp4"
+                ],
+                'ours': [
+                    "30s/ours/smoke_ours.mp4",
+                    "30s/ours/windshield_ours.mp4",
+                    "30s/ours/aquaman_ours.mp4",
+                    "30s/ours/render_ours.mp4",
+                    "30s/ours/corridor_ours.mp4",
+                    "video_30s_rolling_06_tokentrim.mp4",
+                    "video_30s_rolling_07_tokentrim.mp4",
+                    "video_30s_rolling_08_tokentrim.mp4",
+                    "video_30s_rolling_09_tokentrim.mp4",
+                    "video_30s_rolling_10_tokentrim.mp4"
+                ]
+            },
+            'self': {
+                'baseline': [
+                    "video_30s_self_01_baseline.mp4",
+                    "video_30s_self_02_baseline.mp4",
+                    "video_30s_self_03_baseline.mp4",
+                    "video_30s_self_04_baseline.mp4",
+                    "video_30s_self_05_baseline.mp4",
+                    "video_30s_self_06_baseline.mp4",
+                    "video_30s_self_07_baseline.mp4",
+                    "video_30s_self_08_baseline.mp4",
+                    "video_30s_self_09_baseline.mp4",
+                    "video_30s_self_10_baseline.mp4"
+                ],
+                'ours': [
+                    "video_30s_self_01_tokentrim.mp4",
+                    "video_30s_self_02_tokentrim.mp4",
+                    "video_30s_self_03_tokentrim.mp4",
+                    "video_30s_self_04_tokentrim.mp4",
+                    "video_30s_self_05_tokentrim.mp4",
+                    "video_30s_self_06_tokentrim.mp4",
+                    "video_30s_self_07_tokentrim.mp4",
+                    "video_30s_self_08_tokentrim.mp4",
+                    "video_30s_self_09_tokentrim.mp4",
+                    "video_30s_self_10_tokentrim.mp4"
+                ]
+            }
+        },
+        '90s': {
+            'rolling': {
+                'baseline': [
+                    "90s/rolling/glower_rolling.mp4",
+                    "video_90s_rolling_02_baseline.mp4",
+                    "video_90s_rolling_03_baseline.mp4",
+                    "video_90s_rolling_04_baseline.mp4",
+                    "video_90s_rolling_05_baseline.mp4",
+                    "video_90s_rolling_06_baseline.mp4",
+                    "video_90s_rolling_07_baseline.mp4",
+                    "video_90s_rolling_08_baseline.mp4",
+                    "video_90s_rolling_09_baseline.mp4",
+                    "video_90s_rolling_10_baseline.mp4"
+                ],
+                'ours': [
+                    "90s/ours/glower_ours.mp4",
+                    "video_90s_rolling_02_tokentrim.mp4",
+                    "video_90s_rolling_03_tokentrim.mp4",
+                    "video_90s_rolling_04_tokentrim.mp4",
+                    "video_90s_rolling_05_tokentrim.mp4",
+                    "video_90s_rolling_06_tokentrim.mp4",
+                    "video_90s_rolling_07_tokentrim.mp4",
+                    "video_90s_rolling_08_tokentrim.mp4",
+                    "video_90s_rolling_09_tokentrim.mp4",
+                    "video_90s_rolling_10_tokentrim.mp4"
+                ]
+            },
+            'self': {
+                'baseline': [
+                    "video_90s_self_01_baseline.mp4",
+                    "video_90s_self_02_baseline.mp4",
+                    "video_90s_self_03_baseline.mp4",
+                    "video_90s_self_04_baseline.mp4",
+                    "video_90s_self_05_baseline.mp4",
+                    "video_90s_self_06_baseline.mp4",
+                    "video_90s_self_07_baseline.mp4",
+                    "video_90s_self_08_baseline.mp4",
+                    "video_90s_self_09_baseline.mp4",
+                    "video_90s_self_10_baseline.mp4"
+                ],
+                'ours': [
+                    "video_90s_self_01_tokentrim.mp4",
+                    "video_90s_self_02_tokentrim.mp4",
+                    "video_90s_self_03_tokentrim.mp4",
+                    "video_90s_self_04_tokentrim.mp4",
+                    "video_90s_self_05_tokentrim.mp4",
+                    "video_90s_self_06_tokentrim.mp4",
+                    "video_90s_self_07_tokentrim.mp4",
+                    "video_90s_self_08_tokentrim.mp4",
+                    "video_90s_self_09_tokentrim.mp4",
+                    "video_90s_self_10_tokentrim.mp4"
+                ]
+            }
+        }
+    };
+
+    const totalItems = 10;
+
+    // State management for each unified carousel
+    const carouselStates = {
+        '30s': { index: 0 },
+        '90s': { index: 0 }
+    };
+
+    // --- Logic ---
+
+    // Initialize Dots
+    function initDots(sectionId) {
+        const dotsContainer = document.getElementById(`dots-${sectionId}`);
+        dotsContainer.innerHTML = ''; // Clear
+        for (let i = 0; i < totalItems; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = () => jumpToSlide(sectionId, i);
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    function updateCarouselUI(sectionId) {
+        // sectionId is '30s' or '90s'
+        const state = carouselStates[sectionId];
+        const currentIndex = state.index;
+        
+        // We have 4 videos per section:
+        // Rolling Base, Rolling Ours
+        // Self Base, Self Ours
+        
+        // Update Rolling Videos
+        updateVideoPair(sectionId, 'rolling', currentIndex);
+        // Update Self Videos
+        updateVideoPair(sectionId, 'self', currentIndex);
+
+        // Update Prompts
+        // Using specific prompts for each subtype
+        const rollingPrompt = promptData[sectionId]['rolling'][currentIndex];
+        const selfPrompt = promptData[sectionId]['self'][currentIndex];
+        
+        const rollingPromptEl = document.getElementById(`prompt-${sectionId}-rolling`);
+        if(rollingPromptEl) rollingPromptEl.textContent = `"${rollingPrompt}"`;
+        
+        const selfPromptEl = document.getElementById(`prompt-${sectionId}-self`);
+        if(selfPromptEl) selfPromptEl.textContent = `"${selfPrompt}"`;
+
+        // Update Dots
+        const dotsContainer = document.getElementById(`dots-${sectionId}`);
+        const dots = dotsContainer.getElementsByClassName('dot');
+        for (let i = 0; i < dots.length; i++) {
+            if (i === currentIndex) {
+                dots[i].classList.add('active');
+            } else {
+                dots[i].classList.remove('active');
+            }
+        }
+    }
+    
+    function updateVideoPair(sectionId, type, currentIndex) {
+        const baseVid = document.getElementById(`vid-${sectionId}-${type}-base`);
+        const oursVid = document.getElementById(`vid-${sectionId}-${type}-ours`);
+        
+        if (!baseVid || !oursVid) return;
+
+        // Retrieve specific paths
+        const baseFilename = videoData[sectionId][type]['baseline'][currentIndex];
+        const oursFilename = videoData[sectionId][type]['ours'][currentIndex];
+
+        // Assign actual paths
+        baseVid.src = baseFilename;
+        oursVid.src = oursFilename;
+        
+        // Ensure they play if loaded
+        baseVid.play().catch(e => {}); 
+        oursVid.play().catch(e => {});
+    }
+
+    function changeSlide(sectionId, direction) {
+        const state = carouselStates[sectionId];
+        // Calculate new index with wrapping
+        state.index = (state.index + direction + totalItems) % totalItems;
+        updateCarouselUI(sectionId);
+    }
+
+    function jumpToSlide(sectionId, index) {
+        const state = carouselStates[sectionId];
+        state.index = index;
+        updateCarouselUI(sectionId);
+    }
+
+    // Initialize all carousels on load
+    document.addEventListener('DOMContentLoaded', () => {
+        Object.keys(carouselStates).forEach(id => {
+            initDots(id);
+            updateCarouselUI(id);
+        });
+
+        // Enforce video duration limits
+        const limit30 = 30;
+        const limit90 = 90;
+
+        const videos30 = document.querySelectorAll('#carousel-30s video');
+        videos30.forEach(vid => {
+            vid.addEventListener('timeupdate', function() {
+                if (this.currentTime >= limit30) {
+                    this.currentTime = 0;
+                    this.play(); // Ensure it keeps playing
+                }
+            });
+        });
+
+        const videos90 = document.querySelectorAll('#carousel-90s video');
+        videos90.forEach(vid => {
+            vid.addEventListener('timeupdate', function() {
+                if (this.currentTime >= limit90) {
+                    this.currentTime = 0;
+                    this.play(); // Ensure it keeps playing
+                }
+            });
+        });
+    });
+
+</script>
+
+</body>
+</html>
