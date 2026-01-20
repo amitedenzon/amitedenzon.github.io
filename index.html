@@ -405,8 +405,61 @@
             left: 0;
             height: 100%;
             width: 0%;
-            background: var(--accent-blue);
+            background-color: #FF5722 !important; /* Force orange fill */
             border-radius: 2px;
+            z-index: 2;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            right: -6px; /* Center handle on end of fill */
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            transform: translateY(-50%) scale(0);
+            transition: transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            z-index: 3;
+            pointer-events: none; /* Let clicks pass to bg */
+        }
+        
+        .progress-bar-bg:hover .progress-handle {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .progress-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .time-tooltip {
+            position: absolute;
+            bottom: 15px;
+            left: 0;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .progress-bar-bg:hover .time-tooltip {
+            opacity: 1;
         }
 
         /* TokenTrim Highlight Label */
@@ -659,7 +712,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-30s-rolling-base">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-30s-rolling-base">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -669,7 +726,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-30s-rolling-ours">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-30s-rolling-ours">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -692,7 +753,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-30s-self-base">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-30s-self-base">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -702,7 +767,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-30s-self-ours">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-30s-self-ours">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -726,7 +795,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-90s-rolling-base">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-90s-rolling-base">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -736,7 +809,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-90s-rolling-ours">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-90s-rolling-ours">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -759,7 +836,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-90s-self-base">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-90s-self-base">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -769,7 +850,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-90s-self-ours">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-90s-self-ours">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -791,7 +876,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-flowmo-main-base">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-flowmo-main-base">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -801,7 +890,11 @@
                             <div class="custom-controls">
                                 <button class="play-pause-btn" data-target="vid-flowmo-main-ours">❚❚</button>
                                 <div class="progress-bar-bg" data-target="vid-flowmo-main-ours">
-                                    <div class="progress-bar-fill"></div>
+                                    <div class="progress-hover"></div>
+                                    <div class="progress-bar-fill">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                    <div class="time-tooltip">00:00</div>
                                 </div>
                             </div>
                         </div>
@@ -831,6 +924,20 @@
     // Placeholder prompts for each section and baseline type.
     // Easy to customize: just edit the strings in the arrays below.
     const promptData = {
+        'hero': [
+            "A llama dances on a stage with disco lights.",
+            "A young girl coloring at her desk.",
+            "A humanoid silhouette made of stars walks across darkness.",
+            "A hand holding a bright yellow fidget spinner.",
+            "A woman dancing hip hop, street dancing in the studio.",
+            "A boy blowing out candles on a birthday cake.",
+            "A helicopter flying over a forest.",
+            "Pikachu hopping across rocks near a mountain stream.",
+            "Hero Prompt 9",
+            "Hero Prompt 10",
+            "Hero Prompt 11",
+            "Hero Prompt 12"
+        ],
         '30s': {
             'rolling': [
                 "A humanoid made of smoke solidifies briefly with each step, then disperses and reforms.",
@@ -899,6 +1006,20 @@
     // Placeholder video paths.
     // Edit these paths to point to your actual video files.
     const videoData = {
+        'hero': [
+            "90s/ours/llama_ours.mp4",
+            "90s/ours/pencil_ours.mp4",
+            "90s/ours/glower_ours.mp4",
+            "90s/ours/spinner_ours.mp4",
+            "90s/ours/dancer_ours.mp4",
+            "90s/ours/candles_ours.mp4",
+            "90s/ours/helicopter_ours.mp4",
+            "90s/ours/pikachu_ours.mp4",
+            "video_90s_rolling_09_tokentrim.mp4",
+            "video_90s_rolling_10_tokentrim.mp4",
+            "90s/ours/llama_ours.mp4", // Placeholder 11
+            "90s/ours/pencil_ours.mp4"  // Placeholder 12
+        ],
         '30s': {
             'rolling': {
                 'baseline': [
@@ -1134,17 +1255,16 @@
         // Initialize Hero Grid
         const heroGrid = document.getElementById('hero-grid');
         if (heroGrid) {
-            // Manually map indices to ensure we get the best 8 videos
-            // 0:llama, 1:pencil, 2:glower, 3:spinner, 4:dancer, 5:candles, 6:helicopter, 7:pikachu
-            const heroIndices = [0, 1, 2, 3, 4, 5, 6, 7];
-            const heroCount = 12; // 4x3 grid
+            // Use the dedicated hero data
+            const heroVideos = videoData['hero'];
+            const heroPrompts = promptData['hero'];
             
-            for (let i = 0; i < heroCount; i++) {
-                const dataIndex = heroIndices[i % heroIndices.length];
-                
-                // Get path and prompt from 90s/ours
-                const src = videoData['90s']['rolling']['ours'][dataIndex];
-                const promptText = promptData['90s']['rolling'][dataIndex];
+            // Limit to 12 or available length
+            const count = Math.min(heroVideos.length, heroPrompts.length, 12);
+            
+            for (let i = 0; i < count; i++) {
+                const src = heroVideos[i];
+                const promptText = heroPrompts[i];
 
                 if (src && promptText) {
                     const cell = document.createElement('div');
@@ -1162,7 +1282,7 @@
                     
                     const prompt = document.createElement('div');
                     prompt.className = 'hero-prompt';
-                    prompt.textContent = promptText; // Removed "> " prefix
+                    prompt.textContent = promptText; 
                     
                     overlay.appendChild(prompt);
                     cell.appendChild(video);
@@ -1227,6 +1347,33 @@
                 // Jump to time
                 const newTime = percentage * limit;
                 video.currentTime = newTime;
+            });
+
+            // Hover Effects (Tooltip & Ghost Bar)
+            progressBarBg.addEventListener('mousemove', (e) => {
+                const rect = progressBarBg.getBoundingClientRect();
+                const offsetX = e.clientX - rect.left;
+                const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+                
+                // Update Hover Bar
+                const hoverBar = progressBarBg.querySelector('.progress-hover');
+                if (hoverBar) hoverBar.style.width = `${percentage * 100}%`;
+
+                // Update Tooltip
+                const tooltip = progressBarBg.querySelector('.time-tooltip');
+                if (tooltip) {
+                    const time = percentage * limit;
+                    const mins = Math.floor(time / 60);
+                    const secs = Math.floor(time % 60).toString().padStart(2, '0');
+                    tooltip.textContent = `${mins}:${secs}`;
+                    tooltip.style.left = `${percentage * 100}%`;
+                }
+            });
+
+            // Reset Hover on Leave
+            progressBarBg.addEventListener('mouseleave', () => {
+                const hoverBar = progressBarBg.querySelector('.progress-hover');
+                if (hoverBar) hoverBar.style.width = '0%';
             });
         });
     });
