@@ -321,9 +321,13 @@
         }
 
         video {
-            width: 100%;
-            height: 100%; /* Fill container */
-            object-fit: cover; /* Crop to fit, filling the container */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100.5%; /* Slight overlap to prevent gaps */
+            height: 100.5%;
+            object-fit: cover;
             display: block;
         }
 
@@ -667,6 +671,57 @@
             text-shadow: 0 4px 12px rgba(0,0,0,0.8); /* Float effect */
             letter-spacing: -0.02em;
         }
+
+        /* --- FlowMo Layout Refinement --- */
+        .layout-row-flowmo {
+            position: relative; /* Anchor for absolute label */
+            display: block; /* Default block layout */
+            margin-bottom: 20px;
+        }
+
+        .side-label-col {
+            position: absolute;
+            right: 100%; /* Push to the left of the container */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 140px;
+            text-align: right;
+            border-right: 1px solid var(--grid-line);
+            padding-right: 20px;
+            margin-right: 20px; /* Gap between label and content */
+        }
+
+        .side-label-text {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-text);
+            line-height: 1.2;
+            display: block;
+        }
+
+        .content-col {
+            width: 100%; /* Ensure full width */
+        }
+        
+        @media (max-width: 768px) {
+            .layout-row-flowmo {
+                margin-bottom: 40px; /* More space when stacked */
+            }
+            .side-label-col {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                width: 100%;
+                text-align: left;
+                border-right: none;
+                padding-right: 0;
+                margin-right: 0;
+                border-bottom: 1px solid var(--grid-line);
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -869,37 +924,44 @@
         <div class="carousel-wrapper" id="carousel-flowmo">
             <div class="combined-grid">
                 <div class="baseline-group">
-                    <div class="video-stack">
-                        <div class="video-container">
-                            <div class="video-label">FlowMo</div>
-                            <video id="vid-flowmo-main-base" playsinline loop muted autoplay></video>
-                            <div class="custom-controls">
-                                <button class="play-pause-btn" data-target="vid-flowmo-main-base">❚❚</button>
-                                <div class="progress-bar-bg" data-target="vid-flowmo-main-base">
-                                    <div class="progress-hover"></div>
-                                    <div class="progress-bar-fill">
-                                        <div class="progress-handle"></div>
-                                    </div>
-                                    <div class="time-tooltip">00:00</div>
-                                </div>
-                            </div>
+                    <div class="layout-row-flowmo">
+                        <div class="side-label-col">
+                            <span class="side-label-text">30s Video<br>Generation</span>
                         </div>
-                        <div class="video-container">
-                            <div class="video-label label-ours">+ TokenTrim</div>
-                            <video id="vid-flowmo-main-ours" playsinline loop muted autoplay></video>
-                            <div class="custom-controls">
-                                <button class="play-pause-btn" data-target="vid-flowmo-main-ours">❚❚</button>
-                                <div class="progress-bar-bg" data-target="vid-flowmo-main-ours">
-                                    <div class="progress-hover"></div>
-                                    <div class="progress-bar-fill">
-                                        <div class="progress-handle"></div>
+                        <div class="content-col">
+                            <div class="video-stack">
+                                <div class="video-container">
+                                    <div class="video-label">FlowMo</div>
+                                    <video id="vid-flowmo-30s-base" playsinline loop muted autoplay></video>
+                                    <div class="custom-controls">
+                                        <button class="play-pause-btn" data-target="vid-flowmo-30s-base">❚❚</button>
+                                        <div class="progress-bar-bg" data-target="vid-flowmo-30s-base">
+                                            <div class="progress-hover"></div>
+                                            <div class="progress-bar-fill">
+                                                <div class="progress-handle"></div>
+                                            </div>
+                                            <div class="time-tooltip">00:00</div>
+                                        </div>
                                     </div>
-                                    <div class="time-tooltip">00:00</div>
+                                </div>
+                                <div class="video-container">
+                                    <div class="video-label label-ours">+ TokenTrim</div>
+                                    <video id="vid-flowmo-30s-ours" playsinline loop muted autoplay></video>
+                                    <div class="custom-controls">
+                                        <button class="play-pause-btn" data-target="vid-flowmo-30s-ours">❚❚</button>
+                                        <div class="progress-bar-bg" data-target="vid-flowmo-30s-ours">
+                                            <div class="progress-hover"></div>
+                                            <div class="progress-bar-fill">
+                                                <div class="progress-handle"></div>
+                                            </div>
+                                            <div class="time-tooltip">00:00</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="prompt-box" id="prompt-flowmo-30s">Loading prompt...</div>
                         </div>
                     </div>
-                    <div class="prompt-box" id="prompt-flowmo-main">Loading prompt...</div>
                 </div>
 
                 <!-- Controls Bar -->
@@ -908,12 +970,53 @@
                     <div class="dots" id="dots-flowmo"></div>
                     <button class="nav-btn next" onclick="changeSlide('flowmo', 1)">&#10095;</button>
                 </div>
+
+                <div class="baseline-group">
+                    <div class="layout-row-flowmo">
+                        <div class="side-label-col">
+                            <span class="side-label-text">90s Video<br>Generation</span>
+                        </div>
+                        <div class="content-col">
+                            <div class="video-stack">
+                                <div class="video-container">
+                                    <div class="video-label">FlowMo</div>
+                                    <video id="vid-flowmo-90s-base" playsinline loop muted autoplay></video>
+                                    <div class="custom-controls">
+                                        <button class="play-pause-btn" data-target="vid-flowmo-90s-base">❚❚</button>
+                                        <div class="progress-bar-bg" data-target="vid-flowmo-90s-base">
+                                            <div class="progress-hover"></div>
+                                            <div class="progress-bar-fill">
+                                                <div class="progress-handle"></div>
+                                            </div>
+                                            <div class="time-tooltip">00:00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-container">
+                                    <div class="video-label label-ours">+ TokenTrim</div>
+                                    <video id="vid-flowmo-90s-ours" playsinline loop muted autoplay></video>
+                                    <div class="custom-controls">
+                                        <button class="play-pause-btn" data-target="vid-flowmo-90s-ours">❚❚</button>
+                                        <div class="progress-bar-bg" data-target="vid-flowmo-90s-ours">
+                                            <div class="progress-hover"></div>
+                                            <div class="progress-bar-fill">
+                                                <div class="progress-handle"></div>
+                                            </div>
+                                            <div class="time-tooltip">00:00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="prompt-box" id="prompt-flowmo-90s">Loading prompt...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2024 Token Trim Project Page. All videos are placeholders for demonstration.</p>
+        <p>&copy; 2024 Token Trim Project Page.</p>
     </footer>
 
 </div>
@@ -941,15 +1044,15 @@
         '30s': {
             'rolling': [
                 "A humanoid made of smoke solidifies briefly with each step, then disperses and reforms.",
-                "A locked-off shot of frost melting off a car windshield. Ice crystals shrink, slide, and merge.",
                 "A liquid silhouette flows forward in humanoid form.",
                 "A glowing wireframe animal fills itself with flesh as it runs.",
-                "A corridor fills with rising water.",
-                "30s Rolling - Prompt 6",
-                "30s Rolling - Prompt 7",
-                "30s Rolling - Prompt 8",
-                "30s Rolling - Prompt 9",
-                "30s Rolling - Prompt 10"
+                "A frontal shot of a smoke humanoid walking forward. Smoke density is constant and does not disperse.",
+                "A fixed camera shot of a paper humanoid walking forward on a wooden table.",
+                "A ceramic humanoid walks forward. Surface remains intact. No cracks propagate.",
+                "A locked-off shot of frost melting off a car windshield. Ice crystals shrink, slide, and merge.",
+                "A fabric humanoid walks forward with subtle cloth sway.",
+                "A fixed camera shot of a humanoid silhouette. Leaves falling.",
+                "A cardboard humanoid walks forward on a light gray floor.",
             ],
             'self': [
                 "A young girl skips down a quiet suburban street lined with trees.",
@@ -966,16 +1069,16 @@
         },
         '90s': {
             'rolling': [
-                "A llama dances on a stage with disco lights.",
-                "A young girl coloring at her desk.",
-                "A humanoid silhouette made of stars walks across darkness. Glow as he walks.",
-                "A hand holding a bright yellow fidget spinner.",
-                "A woman dancing hip hop, street dancing in the studio. Slow motion.",
-                "A boy blowing out candles on a birthday cake.",
                 "A helicopter flying over a forest. The helicopter is black and has two large rotor blades on top.",
+                "A woman dancing hip hop, street dancing in the studio. Slow motion.",
+                "A clay humanoid with muted terracotta color walks forward on a dark gray floor.",
                 "Pikachu hopping across rocks near a mountain stream, maintaining balance while water splashes nearby.",
-                "1.5m Rolling - Prompt 9",
-                "1.5m Rolling - Prompt 10"
+                "A humanoid silhouette made of stars walks across darkness. Glow as he walks.",
+                "A young girl coloring at her desk.",
+                "A llama dances on a stage with disco lights.",
+                "A clay humanoid walks forward on a neutral tabletop. Deformation is minimal and repeatable.",
+                "A hand holding a bright yellow fidget spinner.",
+                "A crystal humanoid with clear facets walks forward on a black reflective floor."
             ],
             'self': [
                 "1.5m Self - Prompt 1",
@@ -991,12 +1094,29 @@
             ]
         },
         'flowmo': {
-            'main': [
-                "A dragon lowers its head and spreads its wings.",
-                "Smoke drifts sideways with trailing motion.",
-                "A paper cutout character walks sideways flatly.",
-                "FlowMo - Prompt 4",
-                "FlowMo - Prompt 5"
+            '30s': [
+                "FlowMo 30s - Prompt 1",
+                "FlowMo 30s - Prompt 2",
+                "FlowMo 30s - Prompt 3",
+                "FlowMo 30s - Prompt 4",
+                "FlowMo 30s - Prompt 5",
+                "FlowMo 30s - Prompt 6",
+                "FlowMo 30s - Prompt 7",
+                "FlowMo 30s - Prompt 8",
+                "FlowMo 30s - Prompt 9",
+                "FlowMo 30s - Prompt 10"
+            ],
+            '90s': [
+                "FlowMo 90s - Prompt 1",
+                "FlowMo 90s - Prompt 2",
+                "FlowMo 90s - Prompt 3",
+                "FlowMo 90s - Prompt 4",
+                "FlowMo 90s - Prompt 5",
+                "FlowMo 90s - Prompt 6",
+                "FlowMo 90s - Prompt 7",
+                "FlowMo 90s - Prompt 8",
+                "FlowMo 90s - Prompt 9",
+                "FlowMo 90s - Prompt 10"
             ]
         }
     };
@@ -1024,27 +1144,27 @@
             'rolling': {
                 'baseline': [
                     "30s/rolling/smoke_rolling.mp4",
-                    "30s/rolling/windshield_rolling.mp4",
                     "30s/rolling/aquaman_rolling.mp4",
                     "30s/rolling/render_rolling.mp4",
-                    "30s/rolling/corridor_rolling.mp4",
-                    "video_30s_rolling_06_baseline.mp4",
-                    "video_30s_rolling_07_baseline.mp4",
-                    "video_30s_rolling_08_baseline.mp4",
-                    "video_30s_rolling_09_baseline.mp4",
-                    "video_30s_rolling_10_baseline.mp4"
+                    "30s/rolling/robber_rolling.mp4",
+                    "30s/rolling/paperhuman_rolling.mp4",
+                    "30s/rolling/ceramicman_rolling.mp4",
+                    "30s/rolling/windshield_rolling.mp4",
+                    "30s/rolling/clothman_rolling.mp4",
+                    "30s/rolling/leaves_rolling.mp4",
+                    "30s/rolling/cardboard_rolling.mp4",
                 ],
                 'ours': [
                     "30s/ours/smoke_ours.mp4",
-                    "30s/ours/windshield_ours.mp4",
                     "30s/ours/aquaman_ours.mp4",
                     "30s/ours/render_ours.mp4",
-                    "30s/ours/corridor_ours.mp4",
-                    "video_30s_rolling_06_tokentrim.mp4",
-                    "video_30s_rolling_07_tokentrim.mp4",
-                    "video_30s_rolling_08_tokentrim.mp4",
-                    "video_30s_rolling_09_tokentrim.mp4",
-                    "video_30s_rolling_10_tokentrim.mp4"
+                    "30s/ours/robber_ours.mp4",
+                    "30s/ours/paperhuman_ours.mp4",
+                    "30s/ours/ceramicman_ours.mp4",
+                    "30s/ours/windshield_ours.mp4",
+                    "30s/ours/clothman_ours.mp4",
+                    "30s/ours/leaves_ours.mp4",
+                    "30s/ours/cardboard_ours.mp4",
                 ]
             },
             'self': {
@@ -1077,28 +1197,28 @@
         '90s': {
             'rolling': {
                 'baseline': [
-                    "90s/rolling/llama_rolling.mp4",
-                    "90s/rolling/pencil_rolling.mp4",
-                    "90s/rolling/glower_rolling.mp4",
-                    "90s/rolling/spinner_rolling.mp4",
-                    "90s/rolling/dancer_rolling.mp4",
-                    "90s/rolling/candles_rolling.mp4",
                     "90s/rolling/helicopter_rolling.mp4",
+                    "90s/rolling/dancer_rolling.mp4",
+                    "90s/rolling/terracotta_rolling.mp4",
                     "90s/rolling/pikachu_rolling.mp4",
-                    "video_90s_rolling_09_baseline.mp4",
-                    "video_90s_rolling_10_baseline.mp4"
+                    "90s/rolling/glower_rolling.mp4",
+                    "90s/rolling/pencil_rolling.mp4",
+                    "90s/rolling/llama_rolling.mp4",
+                    "90s/rolling/clayman_rolling.mp4",
+                    "90s/rolling/spinner_rolling.mp4",
+                    "90s/rolling/crystalman_rolling.mp4",
                 ],
                 'ours': [
-                    "90s/ours/llama_ours.mp4",
-                    "90s/ours/pencil_ours.mp4",
-                    "90s/ours/glower_ours.mp4",
-                    "90s/ours/spinner_ours.mp4",
-                    "90s/ours/dancer_ours.mp4",
-                    "90s/ours/candles_ours.mp4",
                     "90s/ours/helicopter_ours.mp4",
+                    "90s/ours/dancer_ours.mp4",
+                    "90s/ours/terracotta_ours.mp4",
                     "90s/ours/pikachu_ours.mp4",
-                    "video_90s_rolling_09_tokentrim.mp4",
-                    "video_90s_rolling_10_tokentrim.mp4"
+                    "90s/ours/glower_ours.mp4",
+                    "90s/ours/pencil_ours.mp4",
+                    "90s/ours/llama_ours.mp4",
+                    "90s/ours/clayman_ours.mp4",
+                    "90s/ours/spinner_ours.mp4",
+                    "90s/ours/crystalman_ours.mp4",
                 ]
             },
             'self': {
@@ -1129,20 +1249,56 @@
             }
         },
         'flowmo': {
-            'main': {
+            '30s': {
                 'baseline': [
-                    "baselines/flowmo/dragon_flowmo.mp4",
-                    "baselines/flowmo/plato_flowmo.mp4",
-                    "baselines/flowmo/paperman_flowmo.mp4",
-                    "flowmo/baseline/flowmo_04.mp4",
-                    "flowmo/baseline/flowmo_05.mp4"
+                    "baselines/30s/flowmo/aquahuman_flowmo.mp4",
+                    "baselines/30s/flowmo/woodman_flowmo.mp4",
+                    "flowmo/30s/baseline/03.mp4",
+                    "flowmo/30s/baseline/04.mp4",
+                    "flowmo/30s/baseline/05.mp4",
+                    "flowmo/30s/baseline/06.mp4",
+                    "flowmo/30s/baseline/07.mp4",
+                    "flowmo/30s/baseline/08.mp4",
+                    "flowmo/30s/baseline/09.mp4",
+                    "flowmo/30s/baseline/10.mp4"
                 ],
                 'ours': [
-                    "baselines/ours/dragon_ours.mp4",
-                    "baselines/ours/plato_ours.mp4",
-                    "baselines/ours/paperman_ours.mp4",
-                    "flowmo/ours/trim_04.mp4",
-                    "flowmo/ours/trim_05.mp4"
+                    "baselines/30s/ours/aquahuman_ours.mp4",
+                    "baselines/30s/ours/woodman_ours.mp4",
+                    "flowmo/30s/ours/03.mp4",
+                    "flowmo/30s/ours/04.mp4",
+                    "flowmo/30s/ours/05.mp4",
+                    "flowmo/30s/ours/06.mp4",
+                    "flowmo/30s/ours/07.mp4",
+                    "flowmo/30s/ours/08.mp4",
+                    "flowmo/30s/ours/09.mp4",
+                    "flowmo/30s/ours/10.mp4"
+                ]
+            },
+            '90s': {
+                'baseline': [
+                    "baselines/90s/flowmo/ceramicman_flowmo.mp4",
+                    "baselines/90s/flowmo/dragon_flowmo.mp4",
+                    "baselines/90s/flowmo/paperman_flowmo.mp4",
+                    "baselines/90s/flowmo/plato_flowmo.mp4",
+                    "flowmo/90s/baseline/05.mp4",
+                    "flowmo/90s/baseline/06.mp4",
+                    "flowmo/90s/baseline/07.mp4",
+                    "flowmo/90s/baseline/08.mp4",
+                    "flowmo/90s/baseline/09.mp4",
+                    "flowmo/90s/baseline/10.mp4"
+                ],
+                'ours': [
+                    "baselines/90s/ours/ceramicman_ours.mp4",
+                    "baselines/90s/ours/dragon_ours.mp4",
+                    "baselines/90s/ours/paperman_ours.mp4",
+                    "baselines/90s/ours/plato_ours.mp4",
+                    "flowmo/90s/ours/05.mp4",
+                    "flowmo/90s/ours/06.mp4",
+                    "flowmo/90s/ours/07.mp4",
+                    "flowmo/90s/ours/08.mp4",
+                    "flowmo/90s/ours/09.mp4",
+                    "flowmo/90s/ours/10.mp4"
                 ]
             }
         }
@@ -1152,7 +1308,7 @@
     const sectionConfig = {
         '30s': { count: 10, types: ['rolling', 'self'] },
         '90s': { count: 10, types: ['rolling', 'self'] },
-        'flowmo': { count: 5, types: ['main'] }
+        'flowmo': { count: 10, types: ['30s', '90s'] }
     };
 
     // State management for each unified carousel
@@ -1192,7 +1348,7 @@
             // Update Prompt
             const prompt = promptData[sectionId][type][currentIndex];
             const promptEl = document.getElementById(`prompt-${sectionId}-${type}`);
-            if(promptEl) promptEl.textContent = `> ${prompt}`;
+            if(promptEl) promptEl.textContent = `${prompt}`;
         });
 
         // Update Dots
@@ -1303,8 +1459,8 @@
             
             if (!video || !playBtn || !progressBarBg || !progressBarFill) return;
 
-            // Determine limit based on section ID
-            const is90s = container.closest('#sec-90s') !== null;
+            // Determine limit based on section ID or video ID (for FlowMo 90s)
+            const is90s = container.closest('#sec-90s') !== null || (video.id && video.id.includes('90s'));
             const limit = is90s ? 90 : 30;
 
             // Play/Pause Toggle
