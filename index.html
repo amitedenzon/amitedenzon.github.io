@@ -1030,25 +1030,25 @@
     // Easy to customize: just edit the strings in the arrays below.
     const promptData = {
         'hero': [
+            "A shadow warrior flickers between light sources",
+            "A slime humanoid ripples as it walks",
+            "A plush toy jumps down and dusts itself off",
+            "A cat suddenly jumps and lands softly",
+            "A skeleton dances energetically with exaggerated movements.",
+            "A cloud of white smoke drifting horizontally across a deep navy background.",
             "A llama dances on a stage with disco lights.",
-            "A young girl coloring at her desk.",
-            "A humanoid silhouette made of stars walks across darkness.",
-            "A hand holding a bright yellow fidget spinner.",
-            "A woman dancing hip hop, street dancing in the studio.",
-            "A boy blowing out candles on a birthday cake.",
             "A helicopter flying over a forest.",
             "Pikachu hopping across rocks near a mountain stream.",
-            "Hero Prompt 9",
-            "Hero Prompt 10",
-            "Hero Prompt 11",
-            "Hero Prompt 12"
+            "A woman dancing hip hop, street dancing in the studio.",
+            "A robot learning to walk.",
+            "A bright red kite pulling forward against a light blue sky.",
         ],
         '30s': {
             'rolling': [
-                "A humanoid made of smoke solidifies briefly with each step, then disperses and reforms.",
+                "A humanoid appears out of smoke, then disperses and reforms.",
                 "A liquid silhouette flows forward in humanoid form.",
                 "A glowing wireframe animal fills itself with flesh as it runs.",
-                "A frontal shot of a smoke humanoid walking forward. Smoke density is constant and does not disperse.",
+                "A dark frontal shot of a humanoid walking forward",
                 "A fixed camera shot of a paper humanoid walking forward on a wooden table.",
                 "A ceramic humanoid walks forward. Surface remains intact. No cracks propagate.",
                 "A locked-off shot of frost melting off a car windshield. Ice crystals shrink, slide, and merge.",
@@ -1058,27 +1058,27 @@
             ],
             'self': [
                 "A young girl skips down a quiet suburban street lined with trees.",
-                "A clear glass bottle floating upright in calm water.",
+                "A swarm of identical black birds moving as a single shape across a gray sky.",
                 "A fabric humanoid walks forward with subtle cloth sway.",
                 "A translucent jellyfish drifting slowly through deep blue water.",
                 "A fabric humanoid made of gray cloth walks forward.",
                 "A fixed camera shot of a lava humanoid walking forward.",
                 "A fixed camera shot of a humanoid silhouette made of falling leaves walking forward.",
-                "A swarm of identical black birds moving as a single shape across a gray sky.",
                 "A thick oil droplet crawling downward on a vertical glass pane.",
-                "A translucent jellyfish drifting slowly through deep blue water."
+                "A translucent jellyfish drifting slowly through deep blue water.",
+                "A rolling ocean swell advancing toward the camera.",
             ]
         },
         '90s': {
             'rolling': [
-                "A helicopter flying over a forest. The helicopter is black and has two large rotor blades on top.",
-                "A woman dancing hip hop, street dancing in the studio. Slow motion.",
+                "A helicopter flying over a forest.",
+                "A woman dancing hip hop, street dancing in the studio.",
                 "A clay humanoid with muted terracotta color walks forward on a dark gray floor.",
                 "Pikachu hopping across rocks near a mountain stream, maintaining balance while water splashes nearby.",
-                "A humanoid silhouette made of stars walks across darkness. Glow as he walks.",
+                "A humanoid silhouette made of stars walks across darkness.",
                 "A young girl coloring at her desk.",
                 "A llama dances on a stage with disco lights.",
-                "A clay humanoid walks forward on a neutral tabletop. Deformation is minimal and repeatable.",
+                "A clay humanoid walks forward on a neutral tabletop.",
                 "A hand holding a bright yellow fidget spinner.",
                 "A crystal humanoid with clear facets walks forward on a black reflective floor."
             ],
@@ -1129,18 +1129,18 @@
     // Edit these paths to point to your actual video files.
     const videoData = {
         'hero': [
+            "hero/force.mp4",
+            "hero/alien.mp4",
+            "hero/puppet2.mp4",
+            "hero/cat.mp4",
+            "hero/skeleton.mp4",
+            "90s/ours/cloud_ours.mp4",
             "90s/ours/llama_ours.mp4",
-            "90s/ours/pencil_ours.mp4",
-            "90s/ours/glower_ours.mp4",
-            "90s/ours/spinner_ours.mp4",
-            "90s/ours/dancer_ours.mp4",
-            "90s/ours/candles_ours.mp4",
             "90s/ours/helicopter_ours.mp4",
             "90s/ours/pikachu_ours.mp4",
-            "video_90s_rolling_09_tokentrim.mp4",
-            "video_90s_rolling_10_tokentrim.mp4",
-            "90s/ours/llama_ours.mp4", // Placeholder 11
-            "90s/ours/pencil_ours.mp4"  // Placeholder 12
+            "90s/ours/dancer_ours.mp4",
+            "hero/robot.mp4",
+            "90s/ours/kite_ours.mp4",
         ],
         '30s': {
             'rolling': {
@@ -1149,7 +1149,7 @@
                     "30s/rolling/aquaman_rolling.mp4",
                     "30s/rolling/render_rolling.mp4",
                     "30s/rolling/robber_rolling.mp4",
-                    "30s/rolling/paperhuman_rolling.mp4",
+                    "30s/rolling/paperhuman_rolling.mp4", //
                     "30s/rolling/ceramicman_rolling.mp4",
                     "30s/rolling/windshield_rolling.mp4",
                     "30s/rolling/clothman_rolling.mp4",
@@ -1172,35 +1172,35 @@
             'self': {
                 'baseline': [
                     "30s/self/girl_walking_self.mp4",
-                    "30s/self/bottle_self.mp4",
+                    "30s/self/birds_self.mp4",
                     "30s/self/fabricman_self.mp4",
                     "30s/self/jellyfish_self.mp4",
                     "30s/self/kanye_self.mp4",
                     "30s/self/lava_self.mp4",
                     "30s/self/leaves_self.mp4",
-                    "30s/self/birds_self.mp4",
                     "30s/self/droplet_self.mp4",
                     "30s/self/ice_self.mp4",
+                    "30s/self/wave_self.mp4",
                     "30s/self/origami_self.mp4",
                     "30s/self/robot_self.mp4",
                     "30s/self/smokemen_self.mp4",
-                    "30s/self/wave_self.mp4",
+                    "30s/self/bottle_self.mp4",
                 ],
                 'ours': [
                     "30s/ours/girl_walking_ours.mp4",
-                    "30s/ours/bottle_ours.mp4",
+                    "30s/ours/birds_ours.mp4",
                     "30s/ours/fabricman_ours.mp4",
                     "30s/ours/jellyfish_ours.mp4",
                     "30s/ours/kanye_ours.mp4",
                     "30s/ours/lava_ours.mp4",
                     "30s/ours/leaves_ours.mp4",
-                    "30s/ours/birds_ours.mp4",
                     "30s/ours/droplet_ours.mp4",
                     "30s/ours/ice_ours.mp4",
+                    "30s/ours/wave_ours.mp4",
                     "30s/ours/origami_ours.mp4",
                     "30s/ours/robot_ours.mp4",
                     "30s/ours/smokemen_ours.mp4",
-                    "30s/ours/wave_ours.mp4",
+                    "30s/ours/bottle_ours.mp4",
                 ]
             }
         },
