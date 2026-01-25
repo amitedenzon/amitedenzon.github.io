@@ -132,6 +132,17 @@
             display: inline-block;
             margin: 0 4px;
         }
+        
+        .author-name a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .author-name a:hover {
+            color: var(--accent-orange);
+            text-decoration: underline;
+        }
 
         .affiliations {
             font-family: 'JetBrains Mono', monospace; /* Keep mono for affils */
@@ -918,10 +929,10 @@
         <h1>TokenTrim: Inference-Time Token Pruning for Autoregressive Long Video Generation</h1>
         <div class="authors-container">
             <div class="authors">
-                <span class="author-name">Ariel Shaulov<sup>1</sup></span>,
-                <span class="author-name">Eitan Shaar<sup>2</sup></span>,
-                <span class="author-name">Amit Edenzon<sup>3</sup></span>,
-                <span class="author-name">Lior Wolf<sup>1</sup></span>
+                <span class="author-name"><a href="https://scholar.google.com/citations?user=A31XmP0AAAAJ&hl=iw&oi=sra" target="_blank">Ariel Shaulov</a><sup>1</sup></span>,
+                <span class="author-name"><a href="https://scholar.google.com/citations?hl=iw&user=9o4q_M8AAAAJ" target="_blank">Eitan Shaar</a><sup>2</sup></span>,
+                <span class="author-name"><a href="https://www.linkedin.com/in/amit-edenzon/" target="_blank">Amit Edenzon</a><sup>3</sup></span>,
+                <span class="author-name"><a href="https://www.cs.tau.ac.il/~wolf/" target="_blank">Lior Wolf</a><sup>1</sup></span>
             </div>
             <div class="affiliations">
                 <span class="affiliation"><sup>1</sup>Tel Aviv University</span>
