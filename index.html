@@ -9,6 +9,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 
+    <!-- MathJax Configuration -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         :root {
             /* Palette: Precision Engineering */
@@ -169,18 +179,20 @@
         }
 
         /* --- Internal Navigation --- */
+        /* --- Internal Navigation (Floating Right) --- */
         .internal-nav {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
-            width: fit-content;
-            margin: 35px auto; /* Center horizontally */
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            padding: 6px;
-            background: #f8fafc; /* Very light slate */
-            border: 1px solid var(--border-color);
-            border-radius: 999px; /* Pill shape */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-direction: column;
+            gap: 12px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            z-index: 9; /* Behind hero (z=10), visible when scrolling past */
         }
 
         .nav-link {
@@ -188,20 +200,58 @@
             color: var(--secondary-text);
             font-weight: 600;
             font-size: 0.9rem;
-            padding: 8px 24px;
-            border-radius: 999px;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); /* Pill/Rounded Rectangle */
+            box-shadow: var(--shadow-soft);
             transition: all 0.2s ease;
-            position: relative;
+            text-align: center; /* Centered text */
+            white-space: nowrap;
         }
 
         .nav-link:hover {
             color: white;
             background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            transform: translateX(-5px); /* Slide left slightly on hover */
             box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
         }
         
         /* Remove old underline styles */
         .nav-link::after { content: none; }
+
+        /* Mobile Override: Revert to static inline */
+        @media (max-width: 900px) {
+            .internal-nav {
+                position: static;
+                transform: none;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                width: fit-content;
+                margin: 35px auto;
+                background: #f8fafc;
+                border: 1px solid var(--border-color);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+                padding: 6px;
+                z-index: 1;
+            }
+
+            .nav-link {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                border-radius: 999px;
+                padding: 8px 24px;
+                text-align: center;
+            }
+            
+            .nav-link:hover {
+                transform: none;
+                background: var(--accent-orange);
+            }
+        }
 
         /* --- Abstract Section (Technical Card) --- */
         .abstract-section {
@@ -271,29 +321,53 @@
             margin-right: auto;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-soft);
+            position: relative; /* For top bar */
+            overflow: hidden;
+        }
+
+        /* Decorative "Tech Spec" Orange Top Bar (Matched to Abstract) */
+        .method-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-orange);
         }
 
         .method-section h2 {
             text-align: left;
             margin-top: 0;
-            font-size: 1.5rem;
-            color: var(--primary-text);
+            font-size: 1.2rem; /* Matched to Abstract */
+            text-transform: uppercase; /* Matched to Abstract */
+            letter-spacing: 0.05em; /* Matched to Abstract */
+            color: var(--secondary-text); /* Matched to Abstract */
             font-weight: 700;
-            margin-bottom: 25px;
-            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-section h2::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background: var(--grid-line);
         }
 
         .method-figure {
             width: 100%;
-            height: 600px; /* Fixed height for PDF view */
+            height: auto; /* Allow image to define height */
             margin-bottom: 30px;
             /* Remove border and background for seamless integration */
             overflow: hidden;
         }
         
-        .method-figure embed {
+        .method-img {
             width: 100%;
-            height: 100%;
+            height: auto;
             display: block;
         }
 
@@ -766,10 +840,18 @@
             width: 100%;
         }
 
+
         /* Disable prompt on hover for the 2 middle images (indices 6 and 7 in 1-based nth-child) */
         .hero-cell:nth-child(7) .hero-overlay,
         .hero-cell:nth-child(8) .hero-overlay {
             display: none !important;
+        }
+
+        /* Always apply "hover" effect (dim & blur) to middle cells for Title Contrast */
+        .hero-cell:nth-child(7) video,
+        .hero-cell:nth-child(8) video {
+            opacity: 0.7;
+            filter: brightness(0.8) blur(1px);
         }
 
         /* --- FlowMo Layout Refinement --- */
@@ -832,7 +914,7 @@
 
 <div class="container">
 
-    <header>
+    <header id="home">
         <h1>TokenTrim: Inference-Time Token Pruning for Autoregressive Long Video Generation</h1>
         <div class="authors-container">
             <div class="authors">
@@ -856,13 +938,16 @@
             * videos quality was reduced in order to fit the sizing constraints
         </div>
     </header>
-    <section class="abstract-section">
+    <section class="abstract-section" id="sec-abstract">
         <h2>Abstract</h2>
         <p>
             Auto-regressive video generation enables long video synthesis by iteratively conditioning each new batch of frames on previously generated content. However, recent work has shown that such pipelines suffer from severe temporal drift, where errors accumulate and amplify over long horizons. We hypothesize that this drift does not primarily stem from insufficient model capacity, but rather from inference-time error propagation. Specifically, we contend that drift arises from the uncontrolled reuse of corrupted latent conditioning tokens during auto-regressive inference. To correct this accumulation of errors, we propose a simple, inference-time method that mitigates temporal drift by identifying and removing unstable latent tokens before they are reused for conditioning. For this purpose, we define unstable tokens as latent tokens whose representations deviate significantly from those of the previously generated batch, indicating potential corruption or semantic drift. By explicitly removing corrupted latent tokens from the auto-regressive context, rather than modifying entire spatial regions or model parameters, our method prevents unreliable latent information from influencing future generation steps. As a result, it significantly improves long-horizon temporal consistency without modifying the model architecture, training procedure, or leaving latent space.
         </p>
     </section>
     <nav class="internal-nav">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#sec-abstract" class="nav-link">Abstract</a>
+            <a href="#sec-method" class="nav-link">Method</a>
             <a href="#sec-30s" class="nav-link">30s Video Generations</a>
             <a href="#sec-90s" class="nav-link">90s Video Generations</a>
             <a href="#sec-flowmo" class="nav-link">FlowMo vs TokenTrim</a>
@@ -871,12 +956,19 @@
     <section class="method-section" id="sec-method">
         <h2>Method</h2>
         <div class="method-figure">
-            <embed src="method/fig_smoke_dif.pdf" type="application/pdf" />
+            <img src="method/fig_smoke_dif.png" alt="Method Formulation Figure" class="method-img" />
         </div>
         <div class="method-text">
-            <h3>Mathematical Formulation</h3>
             <p>
-                [Insert Mathematical Text Here]
+                <b>TokenTrim overview at autoregressive step $t$.</b><br>
+                <b>(a)</b> Given the candidate batch $\mathcal{X}_t$ and the previous batch $\mathcal{X}_{t-1}$, we encode each frame and form latent summaries
+                $Z_t$ and $Z_{t-1}$ by averaging latents over the $F$ frames in each batch.
+                We compute per-token drift $d_i=\lVert Z_t(i)-Z_{t-1}(i)\rVert_2$ and select the top-$pN$ largest drifts to form the unstable set $S_t$,
+                from which we compute the drift severity $D_t$.<br>
+                <b>(b)</b> We compare $D_t$ to the adaptive threshold $\mu_t+\lambda\sigma_t$.
+                If $D_t \le \mu_t+\lambda\sigma_t$, the KV cache $(K,V)$ is left unchanged and the batch is accepted.
+                Otherwise, we mask the selected token positions in the temporal KV cache to obtain $(\tilde{K},\tilde{V})$ and regenerate the current batch conditioned on the pruned cache.
+                Running statistics and the cache are updated using the accepted batch $\mathcal{X}_t^{\star}$.
             </p>
         </div>
     </section>
