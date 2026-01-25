@@ -107,15 +107,35 @@
         }
 
         .authors {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            color: var(--secondary-text);
-            background: white;
+            font-family: 'Plus Jakarta Sans', sans-serif; /* Switch to main font for names */
+            font-size: 1.1rem;
+            color: var(--primary-text);
+            background: transparent;
+            display: block;
+            padding: 0;
+            border: none;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .author-name {
             display: inline-block;
-            padding: 4px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            margin-bottom: 30px;
+            margin: 0 4px;
+        }
+
+        .affiliations {
+            font-family: 'JetBrains Mono', monospace; /* Keep mono for affils */
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .affiliation {
+            display: inline-block;
         }
 
         .links {
@@ -150,11 +170,12 @@
 
         /* --- Internal Navigation --- */
         .internal-nav {
-            display: inline-flex;
+            display: flex;
+            width: fit-content;
+            margin: 35px auto; /* Center horizontally */
             justify-content: center;
             align-items: center;
             gap: 8px;
-            margin-top: 35px;
             padding: 6px;
             background: #f8fafc; /* Very light slate */
             border: 1px solid var(--border-color);
@@ -236,6 +257,61 @@
             color: var(--secondary-text);
             font-size: 1.05rem;
             line-height: 1.75;
+        }
+
+
+        /* --- Method Section --- */
+        .method-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 50px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .method-section h2 {
+            text-align: left;
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--primary-text);
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: -0.02em;
+        }
+
+        .method-figure {
+            width: 100%;
+            height: 600px; /* Fixed height for PDF view */
+            margin-bottom: 30px;
+            /* Remove border and background for seamless integration */
+            overflow: hidden;
+        }
+        
+        .method-figure embed {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .method-text {
+            color: var(--secondary-text);
+            font-size: 1.05rem;
+            line-height: 1.75;
+            background: var(--terminal-bg);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .method-text h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            color: var(--primary-text);
         }
 
         /* --- Results Section Styling --- */
@@ -672,6 +748,30 @@
             letter-spacing: -0.02em;
         }
 
+
+        .hero-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            color: white;
+            font-size: 8rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            text-shadow: 0 20px 60px rgba(0,0,0,0.9); /* Darker shadow */
+            text-align: center;
+            line-height: 1;
+            width: 100%;
+        }
+
+        /* Disable prompt on hover for the 2 middle images (indices 6 and 7 in 1-based nth-child) */
+        .hero-cell:nth-child(7) .hero-overlay,
+        .hero-cell:nth-child(8) .hero-overlay {
+            display: none !important;
+        }
+
         /* --- FlowMo Layout Refinement --- */
         .layout-row-flowmo {
             position: relative; /* Anchor for absolute label */
@@ -726,37 +826,60 @@
 </head>
 <body>
 
-<div id="hero-grid" class="hero-grid"></div>
+<div id="hero-grid" class="hero-grid">
+    <div class="hero-title">TokenTrim</div>
+</div>
 
 <div class="container">
 
     <header>
-        <h1>Token Trim: Inference-Time Token Pruning for Autoregressive Long Video Generation</h1>
-        <div class="authors">
-            Anonymous Author(s) (Submission ID: 443)
+        <h1>TokenTrim: Inference-Time Token Pruning for Autoregressive Long Video Generation</h1>
+        <div class="authors-container">
+            <div class="authors">
+                <span class="author-name">Ariel Shaulov<sup>1</sup></span>,
+                <span class="author-name">Eitan Shaar<sup>2</sup></span>,
+                <span class="author-name">Amit Edenzon<sup>3</sup></span>,
+                <span class="author-name">Lior Wolf<sup>1</sup></span>
+            </div>
+            <div class="affiliations">
+                <span class="affiliation"><sup>1</sup>Tel Aviv University</span>
+                <span class="affiliation"><sup>2</sup>Independent Researcher</span>
+                <span class="affiliation"><sup>3</sup>Bar Ilan University</span>
+            </div>
         </div>
-        <div style="color: var(--accent-orange); font-size: 0.85rem; font-weight: 500; margin-top: -20px; margin-bottom: 30px;">
-            * videos quality was reduced in order to fit the sizing constraints
-        </div>
-        <!-- <div class="links">
+        <div class="links">
             <a href="#" class="btn">Paper (PDF)</a>
             <a href="#" class="btn">Code (GitHub)</a>
             <a href="#" class="btn">BibTeX</a>
         </div>
-         -->
-        <!-- <nav class="internal-nav">
-            <a href="#carousel-30s" class="nav-link">30s Video Generations</a>
-            <a href="#carousel-90s" class="nav-link">90s Video Generations</a>
-        </nav> -->
+        <div style="color: var(--accent-orange); font-size: 0.85rem; font-weight: 500; margin-top: 10px; margin-bottom: 30px;">
+            * videos quality was reduced in order to fit the sizing constraints
+        </div>
     </header>
-
     <section class="abstract-section">
         <h2>Abstract</h2>
         <p>
             Auto-regressive video generation enables long video synthesis by iteratively conditioning each new batch of frames on previously generated content. However, recent work has shown that such pipelines suffer from severe temporal drift, where errors accumulate and amplify over long horizons. We hypothesize that this drift does not primarily stem from insufficient model capacity, but rather from inference-time error propagation. Specifically, we contend that drift arises from the uncontrolled reuse of corrupted latent conditioning tokens during auto-regressive inference. To correct this accumulation of errors, we propose a simple, inference-time method that mitigates temporal drift by identifying and removing unstable latent tokens before they are reused for conditioning. For this purpose, we define unstable tokens as latent tokens whose representations deviate significantly from those of the previously generated batch, indicating potential corruption or semantic drift. By explicitly removing corrupted latent tokens from the auto-regressive context, rather than modifying entire spatial regions or model parameters, our method prevents unreliable latent information from influencing future generation steps. As a result, it significantly improves long-horizon temporal consistency without modifying the model architecture, training procedure, or leaving latent space.
         </p>
     </section>
-
+    <nav class="internal-nav">
+            <a href="#sec-30s" class="nav-link">30s Video Generations</a>
+            <a href="#sec-90s" class="nav-link">90s Video Generations</a>
+            <a href="#sec-flowmo" class="nav-link">FlowMo vs TokenTrim</a>
+    </nav>
+    
+    <section class="method-section" id="sec-method">
+        <h2>Method</h2>
+        <div class="method-figure">
+            <embed src="method/fig_smoke_dif.pdf" type="application/pdf" />
+        </div>
+        <div class="method-text">
+            <h3>Mathematical Formulation</h3>
+            <p>
+                [Insert Mathematical Text Here]
+            </p>
+        </div>
+    </section>
     <section class="results-section" id="sec-30s">
         <h2 class="section-title">30s Video Generation Comparison</h2>
 
@@ -925,7 +1048,6 @@
 
     <section class="results-section" id="sec-flowmo">
         <h2 class="section-title">FlowMo vs TokenTrim Comparison</h2>
-
         <div class="carousel-wrapper" id="carousel-flowmo">
             <div class="combined-grid">
                 <div class="baseline-group">
@@ -1033,18 +1155,18 @@
     // Easy to customize: just edit the strings in the arrays below.
     const promptData = {
         'hero': [
-            "A shadow warrior flickers between light sources",
-            "A slime humanoid ripples as it walks",
-            "A plush toy jumps down and dusts itself off",
-            "A cat suddenly jumps and lands softly",
-            "A skeleton dances energetically with exaggerated movements.",
-            "A cloud of white smoke drifting horizontally across a deep navy background.",
-            "A llama dances on a stage with disco lights.",
             "A helicopter flying over a forest.",
-            "Pikachu hopping across rocks near a mountain stream.",
+            "A slime humanoid ripples as it walks",
+            "A llama dances on a stage with disco lights.",
             "A woman dancing hip hop, street dancing in the studio.",
             "A robot learning to walk.",
             "A bright red kite pulling forward against a light blue sky.",
+            "A skeleton dances energetically with exaggerated movements.",
+            "A cloud of white smoke drifting horizontally across a deep navy background.",
+            "A shadow warrior flickers between light sources",
+            "A cat suddenly jumps and lands softly",
+            "Pikachu hopping across rocks near a mountain stream.",
+            "A plush toy jumps down and dusts itself off",
         ],
         '30s': {
             'rolling': [
@@ -1120,18 +1242,18 @@
     // Edit these paths to point to your actual video files.
     const videoData = {
         'hero': [
-            "hero/force.mp4",
-            "hero/alien.mp4",
-            "hero/puppet2.mp4",
-            "hero/cat.mp4",
-            "hero/skeleton.mp4",
-            "90s/ours/cloud_ours.mp4",
-            "90s/ours/llama_ours.mp4",
             "90s/ours/helicopter_ours.mp4",
-            "90s/ours/pikachu_ours.mp4",
+            "hero/alien.mp4",
+            "90s/ours/llama_ours.mp4",
             "90s/ours/dancer_ours.mp4",
             "hero/robot.mp4",
             "90s/ours/kite_ours.mp4",
+            "hero/skeleton.mp4",
+            "90s/ours/cloud_ours.mp4",
+            "hero/force.mp4",
+            "hero/cat.mp4",
+            "90s/ours/pikachu_ours.mp4",
+            "hero/puppet2.mp4",
         ],
         '30s': {
             'rolling': {
