@@ -485,6 +485,55 @@
 				color: var(--primary-text);
 			}
 
+			/* Collapsible toggle for method descriptions */
+			.method-toggle {
+				margin-bottom: 20px;
+			}
+
+			.method-toggle summary {
+				cursor: pointer;
+				display: inline-flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px 22px;
+				background: var(--terminal-bg);
+				border: 1px solid var(--border-color);
+				border-radius: var(--radius-md);
+				font-family: "Plus Jakarta Sans", sans-serif;
+				font-weight: 600;
+				font-size: 0.95rem;
+				color: var(--primary-text);
+				box-shadow: var(--shadow-soft);
+				transition: all 0.2s ease;
+				list-style: none;
+				user-select: none;
+			}
+
+			.method-toggle summary::-webkit-details-marker {
+				display: none;
+			}
+
+			.method-toggle summary::after {
+				content: "▾";
+				font-size: 0.75rem;
+				transition: transform 0.25s ease;
+			}
+
+			.method-toggle[open] summary::after {
+				transform: rotate(-180deg);
+			}
+
+			.method-toggle summary:hover {
+				background: var(--accent-orange);
+				color: white;
+				border-color: var(--accent-orange);
+				box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+			}
+
+			.method-toggle .method-text {
+				margin-top: 15px;
+			}
+
 			/* --- Results Section Styling --- */
 			.results-section {
 				margin-bottom: 50px; /* Reduced from 100px */
@@ -1006,7 +1055,9 @@
 						alt="Training Method Figure"
 						class="method-img" />
 				</div>
-				<div class="method-text">
+				<details class="method-toggle">
+					<summary>Show training description</summary>
+					<div class="method-text">
 					<p>
 						<b>The Training Phase</b><br />
 						<br /><b>(a)</b> Invert the video into the generator's
@@ -1052,6 +1103,7 @@
 						>
 					</p>
 				</div>
+				</details>
 				<h2>Inference-Time-Optimization Method</h2>
 				<div class="method-figure">
 					<img
@@ -1059,9 +1111,11 @@
 						alt="ITO Method Figure"
 						class="method-img" />
 				</div>
-				<div class="method-text">
+				<details class="method-toggle">
+					<summary>Show ITO description</summary>
+					<div class="method-text">
 					<p>
-						<b>Inference-Time Optimization Loop.</b><br />
+						<b>Inference-Time Optimization Loop</b><br />
 						<br /><b>(a)</b> Given prompt $p$ and target relation
 						$y$, identify the composition-relevant entity tokens
 						$\mathcal{K}(p)$. At each guided denoising step $t \in
@@ -1108,6 +1162,7 @@
 						>
 					</p>
 				</div>
+				</details>
 			</section>
 			<section class="results-section" id="sec-wan">
 				<h2 class="section-title">Wan2.2-14B</h2>
