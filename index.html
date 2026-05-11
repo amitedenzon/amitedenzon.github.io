@@ -956,59 +956,14 @@
 				</h1>
 				<div class="authors-container">
 					<div class="authors">
-						<span class="author-name"
-							><a
-								href="https://scholar.google.com/citations?user=A31XmP0AAAAJ&hl=iw&oi=sra"
-								target="_blank"
-								>Ariel Shaulov</a
-							><sup>1</sup></span
-						>
-						<span class="author-name"
-							><a
-								href="https://scholar.google.com/citations?hl=iw&user=9o4q_M8AAAAJ"
-								target="_blank"
-								>Eitan Shaar</a
-							><sup>2</sup></span
-						>
-						<span class="author-name"
-							><a
-								href="https://www.linkedin.com/in/amit-edenzon/"
-								target="_blank"
-								>Amit Edenzon</a
-							><sup>3</sup></span
-						>
-						<span class="author-name"
-							><a
-								href="https://chechiklab.biu.ac.il"
-								target="_blank"
-								>Gal Chechik</a
-							><sup>3</sup></span
-						>
-						<span class="author-name"
-							><a
-								href="https://www.cs.tau.ac.il/~wolf/"
-								target="_blank"
-								>Lior Wolf</a
-							><sup>1</sup></span
-						>
-					</div>
-					<div class="affiliations">
-						<span class="affiliation"
-							><sup>1</sup>Tel Aviv University</span
-						>
-						<span class="affiliation"
-							><sup>2</sup>Independent Researcher</span
-						>
-						<span class="affiliation"
-							><sup>3</sup>Bar Ilan University</span
-						>
+						<span class="author-name">Anonymous Authors</span>
 					</div>
 				</div>
-				<div class="links">
+				<!-- <div class="links">
 					<a href="#" class="btn">Paper (PDF)</a>
 					<a href="#" class="btn">Code (GitHub)</a>
 					<a href="#" class="btn">BibTeX</a>
-				</div>
+				</div> -->
 			</header>
 			<section class="abstract-section" id="sec-abstract">
 				<h2>Abstract</h2>
@@ -1053,25 +1008,48 @@
 				</div>
 				<div class="method-text">
 					<p>
-						<b>TokenTrim overview at autoregressive step $t$.</b
-						><br />
-						<b>(a)</b> Given the candidate batch $\mathcal{X}_t$ and
-						the previous batch $\mathcal{X}_{t-1}$, we encode each
-						frame and form latent summaries $Z_t$ and $Z_{t-1}$ by
-						averaging latents over the $F$ frames in each batch. We
-						compute per-token drift $d_i=\lVert
-						Z_t(i)-Z_{t-1}(i)\rVert_2$ and select the top-$pN$
-						largest drifts to form the unstable set $S_t$, from
-						which we compute the drift severity $D_t$.<br />
-						<b>(b)</b> We compare $D_t$ to the adaptive threshold
-						$\mu_t+\lambda\sigma_t$. If $D_t \le
-						\mu_t+\lambda\sigma_t$, the KV cache $(K,V)$ is left
-						unchanged and the batch is accepted. Otherwise, we mask
-						the selected token positions in the temporal KV cache to
-						obtain $(\tilde{K},\tilde{V})$ and regenerate the
-						current batch conditioned on the pruned cache. Running
-						statistics and the cache are updated using the accepted
-						batch $\mathcal{X}_t^{\star}$.
+						<b>The Training Phase</b><br />
+						<br /><b>(a)</b> Invert the video into the generator's
+						latent space and replay the denoising trajectory to
+						recover $\{z_t\}_{t \in \mathcal{T}}$. <br /><b>(b)</b>
+						At each $t \in \mathcal{T}$, extract cross-attention
+						maps $\{A_{t,\ell,h}^{(k)}\}$ for the
+						composition-relevant entity tokens $k \in
+						\mathcal{K}(p)$ across the chosen layers $\ell \in
+						\mathcal{L}$ and heads $h \in \mathcal{H}$ — withholding
+						the target relation token. <br /><b>(c)</b> These maps
+						are flattened, enriched with layer, head, and temporal
+						embeddings, and processed by a Transformer-based
+						aggregation module $\theta_{\mathrm{agg}}$ that produces
+						a per-step spatiotemporal volume $\hat{A}_t$. The full
+						representation is the concatenation across selected
+						steps: $$\phi(z_t, p) \;=\;
+						\mathrm{Concat}\!\left(\hat{A}_{t_1}, \hat{A}_{t_2},
+						\dots, \hat{A}_{t_{|\mathcal{T}|}}\right)$$
+						<b>(d)</b> $\phi(z_t, p)$ is fed into a frozen VLM with
+						a trainable classification head, producing: $\hat{y} =
+						C(\phi(z_t, p))$. <br /><b>(e)</b> To prevent
+						<b>composition leakage</b> — a shortcut in which the
+						classifier predicts the relation from textual traces of
+						the relation word in the attention maps rather than from
+						the spatiotemporal arrangement of grounded entities. we
+						use a video analogue of <b>dual inversion</b>. Each
+						training video is inverted twice: once with a prompt
+						$p^+$ containing the correct composition, and once with
+						a prompt $p^-$ containing an incorrect composition
+						sampled from $\mathcal{Y}$. Both representations
+						$\phi(z_t, p^+)$ and $\phi(z_t, p^-)$ are supervised
+						with the same ground-truth label $y$. <br /><b>(f)</b>
+						We optimize only $\theta_{\mathrm{agg}}$ and the head
+						parameters $(W, b)$ with both the generator and the VLM
+						frozen — by minimizing the dual cross-entropy loss:
+						$$\mathcal{L}_{CE} \;=\; -\log C\!\left(\phi(z_t,
+						p^+)\right)_y \;-\; \log C\!\left(\phi(z_t,
+						p^-)\right)_y$$
+						<b>
+							* Training data combines real videos with synthetic
+							videos.</b
+						>
 					</p>
 				</div>
 				<h2>Inference-Time-Optimization Method</h2>
@@ -1083,8 +1061,51 @@
 				</div>
 				<div class="method-text">
 					<p>
-						<b>Inference-Time Optimization (ITO).</b><br />
-						TODO: explain the ITO method here.
+						<b>Inference-Time Optimization Loop.</b><br />
+						<br /><b>(a)</b> Given prompt $p$ and target relation
+						$y$, identify the composition-relevant entity tokens
+						$\mathcal{K}(p)$. At each guided denoising step $t \in
+						\mathcal{T}$, run the generator's attention layers on
+						the current latent $z_t$ and collect the cross-attention
+						maps $\{A_{t,\ell,h}^{(k)} : \ell \in \mathcal{L}, h \in
+						\mathcal{H}, k \in \mathcal{K}(p)\}$ — the same
+						$\mathcal{L}, \mathcal{H}, \mathcal{T}$ used at
+						training. <br /><b>(b)</b> Pass these maps through the
+						aggregation module $\theta_{\mathrm{agg}}$ to obtain
+						$\phi(z_t, p)$, then through the frozen VLM with the
+						pretrained classification head to obtain a score vector
+						over $\mathcal{Y}$: $$s_t \;=\; C(\phi(z_t, p)) \;\in\;
+						\Delta^{|\mathcal{Y}|}.$$<b>(c)</b> Define the
+						inference-time composition loss as the cross-entropy
+						against the target: $$\mathcal{L}_{\mathrm{comp}}(z_t,
+						p, y) \;=\; -\log s_t[y].$$<b>(d)</b> Update the latent
+						by backpropagating through the classifier and the
+						generator's cross-attention computation: $$z_t' \;=\;
+						z_t - \eta_t \nabla_{z_t}
+						\mathcal{L}_{\mathrm{comp}}(z_t, p, y),$$ where $\eta_t$
+						is the guidance step size. <br /><b>(e)</b> Although the
+						generator and VLM are frozen, gradients flow through
+						their computations because $z_t$ is the input that
+						produces $\mathcal{S}_t(p) = \{A_{t,\ell,h}^{(k)}\}$. By
+						the chain rule: $$\nabla_{z_t}
+						\mathcal{L}_{\mathrm{comp}} \;=\;
+						\underbrace{\frac{\partial
+						\mathcal{L}_{\mathrm{comp}}}{\partial
+						C}}_{\text{cross-entropy}} \cdot
+						\underbrace{\frac{\partial C}{\partial
+						\phi}}_{\text{head} \,+\, \text{VLM}} \cdot
+						\underbrace{\frac{\partial \phi}{\partial
+						\mathcal{S}_t(p)}}_{\text{aggregation }
+						\theta_{\mathrm{agg}}} \cdot \underbrace{\frac{\partial
+						\mathcal{S}_t(p)}{\partial z_t}}_{\text{generator's }
+						\text{attention}}$$
+							<b>*</b> Guidance is applied
+						<b>only during the first denoising steps</b>, where the
+						coarse motion and spatial structure of the video are
+						formed.<br/> The remaining steps are left to refine
+						appearance and texture without compositional
+						perturbation.</b
+						>
 					</p>
 				</div>
 			</section>
@@ -1337,7 +1358,7 @@
 									<div class="video-stack">
 										<div class="video-container">
 											<div class="video-label">
-												Baseline
+												Rolling Forcing
 											</div>
 											<video
 												id="vid-ar-wan-base"
@@ -1479,10 +1500,6 @@
 					basePath: "wan",
 					items: [
 						{
-							name: "seed1_a_rabbit_jumps_on_top_of_the_turtle",
-							prompt: "A rabbit jumps on top of the turtle.",
-						},
-						{
 							name: "seed1_a_rabbit_swim_right_to_a_turtle",
 							prompt: "A rabbit swims right to a turtle.",
 						},
@@ -1499,10 +1516,6 @@
 							prompt: "A bird stops behind the tree.",
 						},
 						{
-							name: "seed2_a_small_brown_dog_walks_toward_a_red_ball_across_a_(in from of the ball and then over and behind the ball)",
-							prompt: "A small brown dog walks toward a red ball — in front of the ball, then over and behind it.",
-						},
-						{
 							name: "seed3_a_deer_jumps_away_from_the_fox",
 							prompt: "A deer jumps away from the fox.",
 						},
@@ -1513,10 +1526,6 @@
 						{
 							name: "seed5_four_apples_lying_on_a_kitchen_counter",
 							prompt: "Four apples lying on a kitchen counter.",
-						},
-						{
-							name: "seed7_a_small_brown_dog_is_walking_on_a_grassy_park_path_(right and then left)",
-							prompt: "A small brown dog walks on a grassy park path (right and then left).",
 						},
 					],
 				},
@@ -1556,57 +1565,37 @@
 							prompt: "A small green frog jumps in between two rocks.",
 						},
 						{
-							name: "seed2_three_cats_sitting_on_a_gray_sofa_and_looking_upwards",
-							prompt: "Three cats sitting on a gray sofa and looking upwards.",
-						},
-						{
 							name: "seed3_a_white_duck_swims_to_the_right_of_a_fallen_branch_and_then_behind",
 							prompt: "A white duck swims to the right of a fallen branch and then behind.",
 						},
 					],
 				},
 				"ar-wan": {
-					basePath: "autoregressive/wan",
+					basePath: "autoregressive/RollingForcing",
 					items: [
 						{
-							name: "seed1_a_rabbit_jumps_on_top_of_the_turtle",
-							prompt: "A rabbit jumps on top of the turtle.",
+							name: "a_brown_dog_walks to the right of a cat",
+							prompt: "A brown dog walks to the right of a cat.",
 						},
 						{
-							name: "seed1_a_rabbit_swim_right_to_a_turtle",
-							prompt: "A rabbit swims right to a turtle.",
+							name: "a_brown_owl_flies_behind_a_tree_trunk_at_dusk,_then_another_owl_fly_to_ the left of the current owl and then goes behind him",
+							prompt: "A brown owl flies behind a tree trunk at dusk, then another owl flies to the left of the current owl and then goes behind him.",
 						},
 						{
-							name: "seed1_Child_gives_water_to_a_thirsty_bird.",
-							prompt: "A child gives water to a thirsty bird.",
+							name: "a_golden_dog_plays_with_two_red_balls_in_the_yard",
+							prompt: "A golden dog plays with two red balls in the yard.",
 						},
 						{
-							name: "seed1_three_boats_moving_on_a_calm_river",
-							prompt: "Three boats moving on a calm river.",
+							name: "a_gray_rabbit_hops_toward_a_fallen_log_on_a_forest_floor,_then_jumps_above_it,turning to the right and then to the left",
+							prompt: "A gray rabbit hops toward a fallen log on a forest floor, then jumps above it, turning to the right and then to the left.",
 						},
 						{
-							name: "seed2_a_bird_stops_behind_the_tree",
-							prompt: "A bird stops behind the tree.",
+							name: "a_gray_seal_slides_across_and two penguins play in the ice_ema",
+							prompt: "A gray seal slides across and two penguins play in the ice.",
 						},
 						{
-							name: "seed2_a_small_brown_dog_walks_toward_a_red_ball_across_a_(in from of the ball and then over and behind the ball)",
-							prompt: "A small brown dog walks toward a red ball — in front of the ball, then over and behind it.",
-						},
-						{
-							name: "seed3_a_deer_jumps_away_from_the_fox",
-							prompt: "A deer jumps away from the fox.",
-						},
-						{
-							name: "seed4_a_boy_walks_in_front_of_the_horse",
-							prompt: "A boy walks in front of the horse.",
-						},
-						{
-							name: "seed5_four_apples_lying_on_a_kitchen_counter",
-							prompt: "Four apples lying on a kitchen counter.",
-						},
-						{
-							name: "seed7_a_small_brown_dog_is_walking_on_a_grassy_park_path_(right and then left)",
-							prompt: "A small brown dog walks on a grassy park path (right and then left).",
+							name: "one_duck_flies_above_a_calm_lake_with_three_swans",
+							prompt: "One duck flies above a calm lake with three swans.",
 						},
 					],
 				},
