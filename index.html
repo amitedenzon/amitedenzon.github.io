@@ -486,11 +486,7 @@
 			}
 
 			/* Collapsible toggle for method descriptions */
-			.method-toggle {
-				margin-bottom: 20px;
-			}
-
-			.method-toggle summary {
+			.method-toggle-btn {
 				cursor: pointer;
 				display: inline-flex;
 				align-items: center;
@@ -505,33 +501,45 @@
 				color: var(--primary-text);
 				box-shadow: var(--shadow-soft);
 				transition: all 0.2s ease;
-				list-style: none;
 				user-select: none;
+				margin-bottom: 0;
 			}
 
-			.method-toggle summary::-webkit-details-marker {
-				display: none;
-			}
-
-			.method-toggle summary::after {
+			.method-toggle-btn::after {
 				content: "▾";
 				font-size: 0.75rem;
 				transition: transform 0.25s ease;
 			}
 
-			.method-toggle[open] summary::after {
+			.method-toggle-btn[aria-expanded="true"]::after {
 				transform: rotate(-180deg);
 			}
 
-			.method-toggle summary:hover {
+			.method-toggle-btn:hover {
 				background: var(--accent-orange);
 				color: white;
 				border-color: var(--accent-orange);
 				box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
 			}
 
-			.method-toggle .method-text {
+			.method-collapsible {
+				overflow: hidden;
+				max-height: 0;
+				opacity: 0;
+				margin-top: 0;
+				margin-bottom: 0;
+				transition:
+					max-height 0.5s ease,
+					opacity 0.3s ease,
+					margin-top 0.4s ease,
+					margin-bottom 0.4s ease;
+			}
+
+			.method-toggle-btn[aria-expanded="true"] + .method-collapsible {
+				max-height: 5000px;
+				opacity: 1;
 				margin-top: 15px;
+				margin-bottom: 20px;
 			}
 
 			/* --- Results Section Styling --- */
@@ -1055,8 +1063,14 @@
 						alt="Training Method Figure"
 						class="method-img" />
 				</div>
-				<details class="method-toggle">
-					<summary>Show training description</summary>
+				<button
+					type="button"
+					class="method-toggle-btn"
+					aria-expanded="false"
+					aria-controls="text-training">
+					Show training description
+				</button>
+				<div class="method-collapsible" id="text-training">
 					<div class="method-text">
 					<p>
 						<b>The Training Phase</b><br />
@@ -1103,7 +1117,7 @@
 						>
 					</p>
 				</div>
-				</details>
+				</div>
 				<h2>Inference-Time-Optimization Method</h2>
 				<div class="method-figure">
 					<img
@@ -1111,8 +1125,14 @@
 						alt="ITO Method Figure"
 						class="method-img" />
 				</div>
-				<details class="method-toggle">
-					<summary>Show ITO description</summary>
+				<button
+					type="button"
+					class="method-toggle-btn"
+					aria-expanded="false"
+					aria-controls="text-ito">
+					Show ITO description
+				</button>
+				<div class="method-collapsible" id="text-ito">
 					<div class="method-text">
 					<p>
 						<b>Inference-Time Optimization Loop</b><br />
@@ -1158,11 +1178,10 @@
 						coarse motion and spatial structure of the video are
 						formed.<br/> The remaining steps are left to refine
 						appearance and texture without compositional
-						perturbation.</b
-						>
+						perturbation.</b>
 					</p>
 				</div>
-				</details>
+				</div>
 			</section>
 			<section class="results-section" id="sec-wan">
 				<h2 class="section-title">Wan2.2-14B</h2>
@@ -1875,6 +1894,20 @@
 							});
 						});
 				}
+
+				// --- Method Description Toggles ---
+				document
+					.querySelectorAll(".method-toggle-btn")
+					.forEach((btn) => {
+						btn.addEventListener("click", () => {
+							const expanded =
+								btn.getAttribute("aria-expanded") === "true";
+							btn.setAttribute(
+								"aria-expanded",
+								expanded ? "false" : "true",
+							);
+						});
+					});
 			});
 		</script>
 	</body>
